@@ -5,5 +5,5 @@ Autor:
     Julio Alexis Rubio Gzz
     A00819054
 
-Avance #1. Se diseño la gramática en base a archivo MyRLike.pdf. Utilizando jison un analizador lexico como bison para javascript se crea el analizar léxico y sintactico.
+Avance #1. Se diseño la gramática en base a archivo MyRLike.pdf con su respectivos diagramas. Utilizando jison un analizador lexico como bison para javascript se crea el analizar léxico y sintactico.
 
