@@ -1,0 +1,23 @@
+{
+  "name": "myrlikecompiler_julioarg",
+  "version": "1.0.0",
+  "description": "Compilador basado en lenguaje MyRLike utilizando js",
+  "main": "parser.js",
+  "dependencies": {
+    "jison": "^0.4.18"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JulioRubio/MyRLikeCompiler_JulioARG.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JulioRubio/MyRLikeCompiler_JulioARG/issues"
+  },
+  "homepage": "https://github.com/JulioRubio/MyRLikeCompiler_JulioARG#readme"
+}
