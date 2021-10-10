@@ -11,29 +11,43 @@
 ")"                 return ')';
 "{"                 return '{';
 "}"                 return '}';
-"="                 return '=';
-">"                 return '>';
-"<"                 return '<';
-"=="                return '==';
-
 
 "+"                 return '+';
 "-"                 return '-';
 "*"                 return '*';
 "/"                 return '/';
+"="                 return '=';
+">"                 return '>';
+"<"                 return '<';
+"!="                return '!=';
+"=="                return '==';
+"&"                 return '&';
+"|"                 return '|';
 
 /* WhiteSpace */
 [ \r\t]+            {}
 \n                  {}
 
 /*Palabras reservadas*/
+"VARS"				return "vars"
 "program"           return "program"
+"read"           	return "read"
+"write"           	return "write"
+"function"          return "function"
+"return"           	return "return"
 "int"               return "int"
 "float"             return "float"
+"char"           	return "char"
+"void"           	return "void"
 "print"             return "print"
 "if"                return "if"
-"else"              return "else"
-"var"				return "var"
+"for"              	return "for"
+"to"              	return "to"
+"do"              	return "do"
+"while"             return "while"
+"main"	            return "main"
+
+
 
 
 
@@ -41,6 +55,9 @@
 [a-zA-Z][a-zA-Z_0-9]*\b  return 'id' 
 [0-9]+("."[0-9]+)\b    	 return 'CTE_F';
 [0-9]+\b                 return 'CTE_I';
+[a-zA-Z]\b               return 'CTE_C';
+[a-zA-Z][a-zA-Z_0-9]+\b  return 'CTE_S';
+
 
 <<EOF>>                 return 'EOF';
 
@@ -58,106 +75,182 @@
 %% /* Definición de la gramática */
 
 PROGRAMA
-	: program id ';' BLOQUE EOF
-	| program id ';' VARS BLOQUE EOF
+	: program id ';' OPT_VARS FUNCTIONS MAIN EOF
 ;
 
-VARS 
-	: var id VAR_ID ':' TIPO ';'
-;
-
-VAR_ID 
-	: VAR_ID ',' id
-	| 
-;
-
-TIPO 
-	: int
-	| float
-;
-
-BLOQUE 
-	: '{' BLOQUE_EST '}'
-;
-
-BLOQUE_EST 
-	: ESTATUTO BLOQUE_EST 
+FUNCTIONS
+	: FUNCTIONS FUNCTION 
 	|
 ;
 
-ESTATUTO 
-	: ASIGNACION
-	| CONDICION
+FUNCTION 
+	: function FUNC_TYPE id '(' OPT_PARAMS ')' ';' OPT_VARS BLOQUE
 ;
 
-ASIGNACION 
-	: id '=' EXPRESION ';'
+MAIN 
+	: function void main '(' OPT_PARAMS ')' ';' OPT_VARS BLOQUE 
 ;
 
-EXPRESION 
-	: EXP EXPRESION_PRIME
+FUNC_TYPE
+	: void
+	| TYPE
 ;
-EXPRESION_PRIME 
-	: EXPRESION_EQL EXP
+
+TYPE
+	: int
+	| float
+	char
+;
+
+BLOQUE 
+	: '{' ESTATUTO ESTATUTOS '}'
+;
+
+OPT_VARS
+	: VARS
 	| 
 ;
 
-EXPRESION_EQL 
-	: '>' 
-	| '<'
-	| '<>'
-;  
-
-CONDICION 
-	: if '(' EXPRESION ')' BLOQUE CONDICION_ELSE
+VARS 
+	: vars TYPE ':' id LISTAS_IDS ';' MULT_VARS
 ;
 
-CONDICION_ELSE
+MULT_VARS
+	: TYPE ':' id LISTAS_IDS ';' MULT_VARS
+	|
+;
+
+LISTAS_IDS 
+	: ',' id LISTAS_IDS
+	|
+;
+
+OPT_PARAMS
+	: PARAMS
+	| 
+;
+
+PARAMS 
+	: TYPE ':' id MULT_PARAMS
+;
+
+MULT_PARAMS 
+	: ',' PARAMS
+	|
+;
+
+ESTATUTOS
+	: ESTATUTO ESTATUTOS
+	|
+;
+
+ESTATUTO	
+	: ASIGNACION
+	| LLAMADA_VOID
+	| RETURN
+	| READ
+	| WRITE
+	| CONDITION
+	| WHILE
+	| FOR
+;
+
+ASIGNACION
+	: id '=' EXPRESSION ';'
+	| id '[' EXP ']' EXPRESSION ';'
+;
+
+LLAMADA_VOID
+	: id '(' EXPRESSION MULT_EXPRESSION ')' ';'
+;
+
+RETURN
+	: return '(' EXP ')' ';'
+;
+
+READ
+	: read '(' id LISTAS_IDS ')' ';'
+;
+
+WRITE
+	: write '(' WRITE_TYPE ')' ';' 
+;
+
+WRITE_TYPE
+	: EXPRESSION MULT_WRITE
+	| CTE_S MULT_WRITE
+;
+
+MULT_WRITE
+	: ',' WRITE_TYPE
+	|
+;
+
+CONDITION
+	: if '(' EXPRESSION ')' BLOQUE CONDITION_ELSE ';'
+;
+
+CONDITION_ELSE
 	: else BLOQUE
 	|
 ;
 
-EXP 
-	: TERMINO EXP_PRIME
+WHILE
+	: while "(" EXPRESSION ')' do BLOQUE
 ;
 
-EXP_PRIME 
-	: EXP_SIGN EXP 
+FOR
+	: for id '=' EXP to EXP do BLOQUE
+;
+
+EXPRESSION
+	: EXP EXPRESSION_TYPE EXP EXPRESSION_CONJ
+;
+
+EXPRESSION_TYPE
+	: '<'
+	| '>'
+	| '=='
+	| '!='
+;
+
+EXPRESSION_CONJ
+	: '&' 
+	| '|'
+;
+
+MULT_EXPRESSION
+	: ',' EXPRESSION MULT_EXPRESSION
 	|
 ;
 
-EXP_SIGN
+EXP
+	: TERM EXP_TYPE 
+;
+
+EXP_TYPE
 	: '+'
 	| '-'
 ;
 
-TERMINO 
-	: FACTOR TERMINO_PRIME
+TERM
+	: FACTOR TERM_TYPE
 ;
 
-TERMINO_PRIME 
-	: TERMINO_SIGN TERMINO
-	| 
-;
-
-TERMINO_SIGN
+TERM_TYPE
 	: '*'
 	| '/'
 ;
 
-FACTOR 
-	: '(' EXPRESION ')' 
-	| FACTOR_SIGN VAR_CTE
+FACTOR	
+	: '(' EXPRESSION ')'
+	| EXP_TYPE VAR_CTE
 	| VAR_CTE
 ;
 
-FACTOR_SIGN
-	: '+'
-	| '-'
-;
-
-VAR_CTE 
-	: id 
-	| CTE_I 
+VAR_CTE
+	: id
+	| CTE_I
 	| CTE_F
+	| CTE_C
 ;
