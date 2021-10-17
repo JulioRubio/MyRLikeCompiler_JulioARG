@@ -13,7 +13,7 @@ let directorioProcedimientos = class {
     }
 
     getFunc = function(name){
-        return this.funcTable.name;
+        return this.funcTable[name];
     }
 
     getFuncTable  = function(){
