@@ -1,24 +1,24 @@
 let cuboSemantico = {
     int:{
         int:{
-            '+': int,
-            '-': int,
-            '*': int,
-            '/': int,
-            '<': bool,
-            '>': bool,
-            '==': bool,
-            '!=':bool,
+            '+': 'int',
+            '-': 'int',
+            '*': 'int',
+            '/': 'int',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
         },
         float:{
-            '+': float,
-            '-': float,
-            '*': float,
-            '/': float,
-            '<': bool,
-            '>': bool,
-            '==': bool,
-            '!=':bool,
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
         },
         char:{
             '+': null,
@@ -53,24 +53,24 @@ let cuboSemantico = {
     },
     float:{
       int:{
-            '+': float,
-            '-': float,
-            '*': float,
-            '/': float,
-            '<': bool,
-            '>': bool,
-            '==': bool,
-            '!=':bool,
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
         },
         float:{
-            '+': float,
-            '-': float,
-            '*': float,
-            '/': float,
-            '<': bool,
-            '>': bool,
-            '==': bool,
-            '!=':bool,
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
         },
         char:{
             '+': null,
@@ -125,7 +125,7 @@ let cuboSemantico = {
             '!=':null,
         },
         char:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -135,7 +135,7 @@ let cuboSemantico = {
             '!=':null,
         },
         string:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -157,7 +157,7 @@ let cuboSemantico = {
     },
     string:{
         int:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -167,7 +167,7 @@ let cuboSemantico = {
             '!=':null,
         },
         float:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -177,7 +177,7 @@ let cuboSemantico = {
             '!=':null,
         },
         char:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -187,7 +187,7 @@ let cuboSemantico = {
             '!=':null,
         },
         string:{
-            '+': string,
+            '+': 'string',
             '-': null,
             '*': null,
             '/': null,
@@ -255,10 +255,18 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': bool,
-            '!=':bool,
+            '==': 'bool',
+            '!=':'bool',
         }  
     } 
 }
 
-export default cuboSemantico;
+// let getType = () =>{
+//     let oper = '+'
+//     let r = 'int'
+//     let l = 'int'
+//     console.log(cuboSemantico[r][l][oper]); 
+// }
+
+
+export default cuboSemantico

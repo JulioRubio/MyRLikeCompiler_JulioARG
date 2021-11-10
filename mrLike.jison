@@ -1,3 +1,8 @@
+%{
+
+%}
+
+
 
 /* Definición Léxica */
 %lex

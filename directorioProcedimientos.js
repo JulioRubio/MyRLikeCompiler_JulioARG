@@ -2,21 +2,21 @@ let directorioProcedimientos = class {
     constructor() {
         this.funcTable = new Object;
     }
-    
-    insertFunc = function(func){
+
+    insertFunc = (func) => {
         if (this.funcTable.hasOwnProperty(func.name)){
             console.log("error funcion ya declarada")
         }
         else{
-            this.funcTable.func.name = func.name;
+            this.funcTable.func.name = func;
         }
     }
 
-    getFunc = function(name){
+    getFunc = (name) =>{
         return this.funcTable[name];
     }
 
-    getFuncTable  = function(){
+    getFuncTable  = () => {
         return this.funcTable;
     }
 }

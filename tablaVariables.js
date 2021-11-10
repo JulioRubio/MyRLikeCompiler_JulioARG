@@ -3,22 +3,24 @@ let tablaVariables = class {
         this.varsTable = new Object;
     }
     
-    insertFunc = function(vars){
+    insertVar = (vars) =>{
         if (this.varsTable.hasOwnProperty(vars.name)){
             console.log("error funcion ya declarada")
         }
         else{
-            this.varsTable.vars.name = vars.name;
+            this.varsTable[vars.name] = vars;
         }
     }
 
-    getFunc = function(name){
+    getVar = (name) => {
         return this.varsTable[name];
     }
 
-    getCarsTable  = function(){
+    getVarsTable  = () =>{
         return this.varsTable;
     }
 }
+
+
 
 export default tablaVariables;
