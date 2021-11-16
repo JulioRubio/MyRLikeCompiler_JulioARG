@@ -1,8 +1,3 @@
-%{
-
-%}
-
-
 
 /* Definición Léxica */
 %lex
@@ -23,11 +18,14 @@
 "/"                 return '/';
 ">"                 return '>';
 "<"                 return '<';
+">="                 return '>=';
+"<="                 return '<=';
 "!="                return '!=';
 "=="                return '==';
 "="                 return '=';
 "&"                 return '&';
 "|"                 return '|';
+
 
 /* WhiteSpace */
 [ \r\t]+            {}
@@ -61,8 +59,8 @@
 [a-zA-Z][a-zA-Z_0-9]*\b  return 'id' 
 [0-9]+("."[0-9]+)\b    	 return 'CTE_F';
 [0-9]+\b                 return 'CTE_I';
-[a-zA-Z]\b               return 'CTE_C';
-[a-zA-Z][a-zA-Z_0-9]+\b  return 'CTE_S';
+\'[a-zA-Z]\'             return 'CTE_C';
+\"(\\.|[^\"])*\"  	 	 return 'CTE_S';
 
 
 <<EOF>>                 return 'EOF';
@@ -72,29 +70,33 @@
 
 /* Asociación de operadores y precedencia */
 
+%right '='
+%left '<' '>' '<=' '>=' '==' '!='
 %left '+' '-'
 %left '*' '/'
-%left UMINUS
 
 %start PROGRAMA
 
 %% /* Definición de la gramática */
 
 PROGRAMA
-	: program id ';' OPT_VARS FUNCTIONS MAIN EOF
+	: program id ';' PROG_OPT_VARS gotoMain MAIN EOF 
+	| program id ';' PROG_OPT_VARS gotoMain FUNCTION  MAIN EOF 
 ;
 
-FUNCTIONS
-	: FUNCTIONS FUNCTION 
-	|
-;
+gotoMain
+	: {
+		codigo.gotoMain();
+	};
+
 
 FUNCTION 
-	: function FUNC_TYPE id '(' OPT_PARAMS ')' OPT_VARS BLOQUE
+	: function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE
+	| FUNCTION function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE
 ;
 
 MAIN 
-	: function void main '('  ')' OPT_VARS BLOQUE 
+	: function void main '('  ')' FUNC_OPT_VARS BLOQUE 
 ;
 
 FUNC_TYPE
@@ -112,22 +114,41 @@ BLOQUE
 	: '{' ESTATUTO ESTATUTOS '}'
 ;
 
-OPT_VARS
-	: VARS
-	| 
+PROG_OPT_VARS
+	: PROG_VARS
+	|
 ;
 
-VARS 
-	: vars TYPE ':' id LISTAS_IDS ';' MULT_VARS
+
+FUNC_OPT_VARS
+	: FUNC_VARS
+	|
+;
+
+PROG_VARS
+	: vars TYPE ':' LISTAS_IDS id  ';' MULT_VARS {
+		console.log($2, $5)
+	}
+;
+
+FUNC_VARS 
+	: vars TYPE ':' id LISTAS_IDS ';' {
+		console.log($2, $4, $5)
+	}
 ;
 
 MULT_VARS
-	: TYPE ':' id LISTAS_IDS ';' MULT_VARS
+	: TYPE ':' LISTAS_IDS id ';' MULT_VARS {
+		console.log($1, $3)
+	}
 	|
 ;
 
 LISTAS_IDS 
-	: ',' id LISTAS_IDS
+	: LISTAS_IDS id ','   {
+		console.log($2)
+		currentGlobalVars.push($2)
+	}
 	|
 ;
 
@@ -184,7 +205,7 @@ WRITE
 
 WRITE_TYPE
 	: EXPRESSION MULT_WRITE
-	| CTE_S MULT_WRITE
+	| CTE_S  MULT_WRITE
 ;
 
 MULT_WRITE
@@ -220,6 +241,8 @@ EXPRESSION
 EXPRESSION_TYPE
 	: '<'
 	| '>'
+	| '<='
+	| '>='
 	| '=='
 	| '!='
 ;
@@ -266,3 +289,23 @@ VAR_CTE
 	| CTE_F
 	| CTE_C
 ;
+
+%%
+
+const codigoInt = require('./codigoInt')
+const cuboSemantico = require('./cuboSemantico')
+const cuadruplos = require("./cuadruplos");
+const mapaMemoria = require('./mapaMemoria');
+const manejadorMemoria = require('./manejadorMemoria');
+
+	
+//variables usadas en jison lexer
+let codigo = new codigoInt();
+let cuadruplo = new cuadruplos();
+let manejador = new maquinaVirtual();
+
+let pointerGlobal;
+let currentGlobalVars = []
+
+
+

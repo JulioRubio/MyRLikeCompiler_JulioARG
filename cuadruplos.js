@@ -1,6 +1,6 @@
 let cuadruplo = class {
     constructor() {
-        this.cuads = new Object;
+        this.cuads = new Object();
         this.oper = 0;
         this.opL = 0;
         this.opR = 0;
@@ -26,6 +26,8 @@ let cuadruplo = class {
         return this.cuads
     }
 }
+
+module.exports = cuadruplo
 
 // let c = new cuadruplo();
 // let counterT = 0;

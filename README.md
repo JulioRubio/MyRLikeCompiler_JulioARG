@@ -14,3 +14,5 @@ Avance #3 se agrego tabla de variables.
 Avance #4 se trabajo en la generacion de codigo intermedio mediante la creacion de cuadruplos.
 
 Avance#5 se termino generacion de codigo intermedio para expresiones aritmeticas y estatutos condicionales y ciclo de while. Se modifico lexer pues por razones de errores pasados no compilaba programa minimo y se arreglo para un problema mas desarrollado como el que se puede observar en input.txt. Se modifico lógica de generación de cuadruplos pues el diseño anterior no me permitia modificar un cuadruplo para resolver los GOTOs.
+
+Avance#6 se creo el mapeo de la memoria, se agrego un manejador de esta memoria global, local, temporal y constantes para dar de alta variables locales y globales que pueden ser entero, flotante o char. Se modifico la gramatica para poder agregar en memoria las direcciones de variables y se comenzo a diseñar la logica de la maquina virtual que leera e interpretara los cuadruplos.

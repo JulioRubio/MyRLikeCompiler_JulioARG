@@ -1,11 +1,3 @@
-program MyRLike;
-vars
-    int: i;
-    int: j;
-    int: p;
-    float: valor;
-
-
 function int fact(int: j)
 vars int: i;{
     i = k + (p - j * 2 + j);
@@ -25,12 +17,4 @@ vars int: x;{
     }
     write(arr);
     write("asum");
-}
-
-function void main ()
-{
-    read(p);
-    j = p * 2;
-    calcula(p);
-    i = fact(p);
 }

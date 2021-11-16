@@ -1,14 +1,16 @@
+let tablaVariables = require("./tablaVariables");
+
 let directorioProcedimientos = class {
     constructor() {
-        this.funcTable = new Object;
+        this.funcTable = new Object();
     }
 
     insertFunc = (func) => {
         if (this.funcTable.hasOwnProperty(func.name)){
-            console.log("error funcion ya declarada")
+            throw new Error(`funcion ${func.name} ya ha sido declarada`)
         }
         else{
-            this.funcTable.func.name = func;
+            this.funcTable[func.name] = func;
         }
     }
 
@@ -21,4 +23,6 @@ let directorioProcedimientos = class {
     }
 }
 
-export default directorioProcedimientos;
+
+
+module.exports = directorioProcedimientos;

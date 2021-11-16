@@ -267,6 +267,3 @@ let cuboSemantico = {
 //     let l = 'int'
 //     console.log(cuboSemantico[r][l][oper]); 
 // }
-
-
-export default cuboSemantico

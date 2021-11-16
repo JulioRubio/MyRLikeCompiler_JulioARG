@@ -1,18 +1,19 @@
-import cuboSemantico from "./cuboSemantico";
-import cuadruplo from "./cuadruplos";
-import directorioProcedimientos from "./directorioProcedimientos";
-import tablaVariables from './tablaVariables';  
+let cuboSemantico = require("./cuboSemantico");
+let cuadruplo = require("./cuadruplos");
 
 class condigoInt{
-    cuadruplos = new cuadruplo();
-    counter = 0;
-    counterT = 0
-    pOPer = [];
-    pilaO = []
-    pTipos = []
-    pSaltos = []
-    avail = []
-    cuboSemantico = cuboSemantico 
+
+    constructor(){
+        this.cuadruplos = new cuadruplo();
+        this.counter = 0;
+        this.counterT = 0;
+        this.pOPer = [];
+        this.pilaO = []
+        this.pTipos = []
+        this.pSaltos = []
+        this.avail = []
+        this.cuboSemantico = cuboSemantico 
+    }
 
     //Funciones globales
     agregarCuadr = (cuad) => {
@@ -106,6 +107,15 @@ class condigoInt{
         this.agregarCuadr(['RETURN', '', '', this.pilaO.pop])
     }
 
+    gotoMain = () =>{
+        this.agregarCuadr(["GOTO",'main','',''])
+
+    }
+
+    fillMain = () =>{
+
+    }
+
     //Estatus no lineales
 
     ifStmt = () => {
@@ -115,7 +125,7 @@ class condigoInt{
             console.log('error, type mismatch');
         }else{
             let res = this.pilaO.pop()
-            this.agregarCuadr(['GotoF', res, '', ''])
+            this.agregarCuadr(['GOTOF', res, '', ''])
             this.pSaltos.push(this.counter-1)
         }
     }
@@ -150,10 +160,11 @@ class condigoInt{
     endWhileStmt = () => {
         let endPos = this.pSaltos.pop()
         let returnPos = this.pSaltos.pop()
-        this.agregarCuadr(['GOTO',returnPos,'',''])
+        this.agregarCuadr(['GOTO',,'','returnPos'])
         fillCuadr(endPos,this.counter)
     }
 
+    //no se jajaja
     forStmt = () => {
         
     }
@@ -161,4 +172,4 @@ class condigoInt{
     
 }
 
-
+module.exports = condigoInt;

@@ -1,11 +1,11 @@
 let tablaVariables = class {
     constructor() {
-        this.varsTable = new Object;
+        this.varsTable = new Object();
     }
     
     insertVar = (vars) =>{
         if (this.varsTable.hasOwnProperty(vars.name)){
-            console.log("error funcion ya declarada")
+            throw new Error(`${vars.name} ya ha sido declarada`)
         }
         else{
             this.varsTable[vars.name] = vars;
@@ -21,6 +21,4 @@ let tablaVariables = class {
     }
 }
 
-
-
-export default tablaVariables;
+module.exports = tablaVariables;
