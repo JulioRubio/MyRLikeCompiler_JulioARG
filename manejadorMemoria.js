@@ -24,6 +24,10 @@ class manejadorMemoria{
         this.mapaLocal.inserDir(tipo, name, val)
     }
 
+    updateLocal = (tipo, dir, val) =>{
+        this.mapaLocal.updateVal(tipo, dir, val)
+    }
+
     getMapaGlobal = (tipo) =>{
         return this.mapaGlobal.getMemoria(tipo);
     }

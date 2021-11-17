@@ -37,16 +37,30 @@ class mapaMemoria{
     inserDir = (tipo, name, val) =>{
         switch (tipo){
             case 'int':{
-                this.memoriaInt[name] = val;
+                this.memoriaInt[this.intPointer] = [tipo, name, val];
+                this.intPointer += 1;
                 break;
             }
             case 'float':{
-                this.memoriaFloat[name] = val;
+                this.memoriaFloat[this.floatPointer] = [tipo, name, val];
+                this.floatPointer += 1;
                 break;
             }
             case 'char':{
-                this.memoriaChar[name] = val;
+                this.memoriaChar[this.charPointer] = [tipo, name, val];
+                this.charPointer += 1;
                 break;
+            }
+        }
+    }
+
+    updateVal = (tipo, dir, val) => {
+        switch (tipo){
+            case 'int':{
+            }
+            case 'float':{
+            }
+            case 'char':{
             }
         }
     }
@@ -70,17 +84,14 @@ class mapaMemoria{
         switch (tipo){
             case 'int':{
                 pointer = this.intPointer;
-                this.intPointer += 1;
                 return pointer;
             }
             case 'float':{
                 pointer = this.floatPointer;
-                this.floatPointer += 1;
                 return pointer;
             }
             case 'char':{
                 pointer = this.charPointer;
-                this.charPointer += 1;
                 return pointer;
             }
         }

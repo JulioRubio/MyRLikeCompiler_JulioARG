@@ -5,32 +5,22 @@ vars
     int: p;
     float: valor;
 
-
-function int fact(int: j)
-vars int: i;{
-    i = k + (p - j * 2 + j);
-    if(j == 1){
-        return(j);
-    }else{
-        return(j);
-    }
-}
-
-function void calcula(int: y)
-vars int: x;{
-    x=1;
-    while(x < 11) do{
-        y = y * 10;
-        x = x + 1;
-    }
-    write(arr);
-    write("asum");
-}
-
 function void main ()
+vars 
+    float: temp;
+    int: y;
 {
-    read(p);
-    j = p * 2;
-    calcula(p);
-    i = fact(p);
+    read(y);
+    read(valor);
+    temp = valor / 10.5;
+    if(j > 0){
+        j = y * 2;
+    }
+    else{
+        j = j + 1;
+    }
+    while (j < 100){
+        i = i + i;
+    }
+    
 }

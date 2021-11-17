@@ -82,11 +82,43 @@
 PROGRAMA
 	: program id ';' PROG_OPT_VARS gotoMain MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
-		console.log(funcTable)
+		// console.log("=============================== ")
+		// console.log ("")
+		console.log("CUADRUPLOS ")
+		console.log(codigo.cuadruplos.cuads)
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Funciones ")
+		// console.log ("")
+		// console.log(funcTable.funcTable)
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Variables ")
+		// console.log ("")
+		// for(const table in funcTable.funcTable){
+		// 	let tableItem = funcTable.getFunc(table);
+		// 	console.log(table, tableItem.varTable.varsTable)
+		// }
 	}
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
+		// console.log("=============================== ")
+		// console.log ("")
+		console.log("CUADRUPLOS ")
 		console.log(codigo.cuadruplos.cuads)
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Funciones ")
+		// console.log ("")
+		// console.log(funcTable.funcTable)
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Variables ")
+		// console.log ("")
+		// for(const table in funcTable.funcTable){
+		// 	let tableItem = funcTable.getFunc(table);
+		// 	console.log(table, tableItem.varTable.varsTable)
+		// }
 	}
 ;
 
@@ -98,20 +130,27 @@ gotoMain
 
 FUNCTION 
 	: function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $2, name:$3, varTable: funcVarTable})
+		funcTable.insertFunc({type: $2, name:$3, varTable: varT})
+		varT = new tablaVariables();
 	}
 	| FUNCTION function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $3, name:$4, varTable: funcVarTable})
+		funcTable.insertFunc({type: $3, name:$4, varTable: varT})
+		varT = new tablaVariables();
 	}
 ;
 
 MAIN 
-	: function void main '('  ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $2, name:$3, varTable: funcVarTable})
-		let func = funcTable.getFunc($3);
+	: function void main fillMain'('  ')' FUNC_OPT_VARS BLOQUE {
+		funcTable.insertFunc({type: $2, name:$3, varTable: varT})
+		varT = new tablaVariables();
 	}
 ;
 
+fillMain
+	:{
+		codigo.fillMain();
+	}
+;
 FUNC_TYPE
 	: void
 	| TYPE
@@ -124,7 +163,7 @@ TYPE
 ;
 
 BLOQUE 
-	: '{' ESTATUTO ESTATUTOS '}'
+	: '{' ESTATUTOS '}'
 ;
 
 PROG_OPT_VARS
@@ -140,31 +179,33 @@ FUNC_OPT_VARS
 
 PROG_VARS
 	: PROG_VARS TYPE ':' id ';'{
-		pointerGlobal = mv.getCurrentGlobalPointer($2);
-		mv.inserGlobal($2, $4, '');
+		pointerGlobal = mm.getCurrentGlobalPointer($2);
+		mm.inserGlobal($2, $4, '');
+		globalVarTable.insertVar($4, {tipo: $2, dir: pointerGlobal})
 	}
 	| TYPE ':' id ';'{
-		pointerGlobal = mv.getCurrentGlobalPointer($1);
-		mv.inserGlobal($1, $3, '');
+		pointerGlobal = mm.getCurrentGlobalPointer($1);
+		mm.inserGlobal($1, $3, '');
+		globalVarTable.insertVar($3, {tipo: $1, dir: pointerGlobal})
 	}
 ;
 
 
 FUNC_VARS 
 	: FUNC_VARS TYPE ':' id ';'{
-		pointerLocal = mv.getCurrentLocalPointer($1);
-		mv.inserLocal($2, $4, '')
+		pointerLocal = mm.getCurrentLocalPointer($2);
+		mm.inserLocal($2, $4, '')
+		varT.insertVar($4, {tipo: $2, dir: pointerLocal})
 	}
 	| TYPE ':' id ';'{
-		pointerLocal = mv.getCurrentLocalPointer($1);
-		mv.inserLocal($1, $3, '')
+		pointerLocal = mm.getCurrentLocalPointer($1);
+		mm.inserLocal($1, $3, '')
+		varT.insertVar($3, {tipo: $1, dir: pointerLocal})
 	}
 ;
 
 LISTAS_IDS 
-	: LISTAS_IDS id ','   {
-		currentGlobalVars.push($2)
-	}
+	: ',' id LISTAS_IDS
 	|
 ;
 
@@ -199,7 +240,11 @@ ESTATUTO
 ;
 
 ASIGNACION
-	: id '=' EXPRESSION ';'
+	: id '=' EXPRESSION ';'{
+		codigo.addOperando($1)
+		codigo.addOperador($2)
+		codigo.asignStmt()
+	}
 	| id '=' LLAMADA_VOID
 ;
 
@@ -212,7 +257,25 @@ RETURN
 ;
 
 READ
-	: read '(' id LISTAS_IDS ')' ';'
+	: read '(' id assignReadVal ')' ';'
+;
+
+//ni idea
+assignReadVal
+	:{
+		let readLocal = varT.getVar($1);
+		let readGlobal = globalVarTable.getVar($1)
+		// let readType;
+		// let readMemoria;
+		if(readLocal != undefined){
+			// readMemoria = mm.getMapaLocal(readLocal.tipo)
+			// // mm.updateLocal(readLocal.tipo, readLocal.dir,input )
+			codigo.addOperando($1, readLocal.tipo)
+		}else if(readGlobal != undefined){
+			codigo.addOperando($1, readGlobal.tipo)
+		}
+		codigo.readStmt()
+	}
 ;
 
 WRITE
@@ -230,16 +293,50 @@ MULT_WRITE
 ;
 
 CONDITION
-	: if '(' EXPRESSION ')' BLOQUE CONDITION_ELSE
+	: CONDITION_IF
+	| CONDITION_IF_ELSE
 ;
 
-CONDITION_ELSE
-	: else BLOQUE
-	|
+fill	
+	:{
+		codigo.fill_ifStmt()
+	}
+;
+
+addIf
+	:{
+		codigo.ifStmt()
+	}
+;
+
+addElse
+	:{
+		codigo.elseStmt()
+	}
+;
+
+CONDITION_IF
+	: if '(' EXPRESSION ')' addIf BLOQUE fill
+;
+
+CONDITION_IF_ELSE
+	: if '(' EXPRESSION ')' addIf BLOQUE else addElse BLOQUE fill
 ;
 
 WHILE
-	: while "(" EXPRESSION ')' do BLOQUE
+	: while whileStmtMarkStart "(" EXPRESSION ')' whileStmt BLOQUE endWhileStmt
+;
+
+whileStmtMarkStart
+	:{codigo.whileStmtMarkStart()}
+;
+
+whileStmt
+	:{codigo.whileStmt()}
+;
+
+endWhileStmt
+	:{codigo.endWhileStmt()}
 ;
 
 FOR
@@ -249,18 +346,30 @@ FOR
 EXPRESSION
 	: EXP EXPRESSION_TYPE EXP EXPRESSION_CONJ EXPRESSION
 	| EXP EXPRESSION_CONJ EXPRESSION
-	| EXP EXPRESSION_TYPE EXP
+	| EXP EXPRESSION_TYPE EXP validarCond
 	| EXP
 
 ;
 
+validarCond
+	:{
+		codigo.validarCond()
+	}
+;
+
 EXPRESSION_TYPE
-	: '<'
-	| '>'
-	| '<='
-	| '>='
-	| '=='
-	| '!='
+	: '<' addCondOper
+	| '>' addCondOper
+	| '<=' addCondOper
+	| '>=' addCondOper
+	| '==' addCondOper
+	| '!=' addCondOper
+;
+
+addCondOper
+	:{
+		codigo.addOperador($1)
+	}
 ;
 
 EXPRESSION_CONJ
@@ -274,23 +383,41 @@ MULT_EXPRESSION
 ;
 
 EXP
-	: TERM EXP_TYPE EXP
-	| TERM
+	: TERM semanticCreateCuadSumRes EXP_TYPE EXP
+	| TERM semanticCreateCuadSumRes
+;
+
+semanticCreateCuadSumRes
+	:{
+		let res = codigo.validarSumaResta()
+	}
 ;
 
 EXP_TYPE
-	: '+'
-	| '-'
+	: '+' addOper
+	| '-' addOper
 ;
 
 TERM
-	: FACTOR TERM_TYPE TERM
-	| FACTOR
+	: FACTOR semanticCreateCuadMultDiv TERM_TYPE TERM
+	| FACTOR semanticCreateCuadMultDiv
+;
+
+semanticCreateCuadMultDiv
+	:{
+		codigo.validarMultDiv()
+	}
 ;
 
 TERM_TYPE
-	: '*'
-	| '/'
+	: '*' addOper
+	| '/' addOper
+;
+
+addOper
+	:{
+		codigo.addOperador($1);
+	}
 ;
 
 FACTOR	
@@ -300,19 +427,42 @@ FACTOR
 ;
 
 VAR_CTE
-	: id
-	| CTE_I
-	| CTE_F
-	| CTE_C
-;
+	: id{
+		let tipoLocal = varT.getVarType($1);
+		let tipoGlobal = globalVarTable.getVarType($1);
+		let temp;
+		if(tipoLocal != undefined){
+			temp = tipoLocal;
+			codigo.addOperando($1, tipoLocal);
 
+		}
+		else if(tipoGlobal != undefined){
+			temp = tipoGlobal;
+			codigo.addOperando($1, tipoGlobal);
+		}
+		else{
+			throw new Error (`var no declarada ${$1}`)
+		}
+
+		
+	}
+	| CTE_I{
+		codigo.addOperando($1, "int");
+	}
+	| CTE_F{
+		codigo.addOperando($1, "float");
+	}
+	| CTE_C{
+		codigo.addOperando($1, "char");
+	}
+;
 %%
 
 const codigoInt = require('./codigoInt')
 const cuboSemantico = require('./cuboSemantico')
 const cuadruplos = require("./cuadruplos");
 const mapaMemoria = require('./mapaMemoria');
-const maquinaVirtual = require('./maquinaVirtual');
+const manejadorMemoria = require('./manejadorMemoria');
 const directorioProcedimientos = require('./directorioProcedimientos'); 
 const tablaVariables = require('./tablaVariables'); 
 
@@ -320,9 +470,10 @@ const tablaVariables = require('./tablaVariables');
 //variables usadas en jison lexer
 let codigo = new codigoInt();
 let cuadruplo = new cuadruplos();
-let mv = new maquinaVirtual();
+let mm = new manejadorMemoria();
 let funcTable = new directorioProcedimientos();
 let funcVarTable = new tablaVariables();
+let varT = new tablaVariables();
 let globalVarTable = new tablaVariables();
 
 

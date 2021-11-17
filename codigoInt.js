@@ -1,5 +1,268 @@
-let cuboSemantico = require("./cuboSemantico");
+
 let cuadruplo = require("./cuadruplos");
+
+let cuboSemantico = {
+    int:{
+        int:{
+            '+': 'int',
+            '-': 'int',
+            '*': 'int',
+            '/': 'int',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
+        },
+        float:{
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
+        },
+        char:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        string:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        bool:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        }  
+    },
+    float:{
+      int:{
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
+        },
+        float:{
+            '+': 'float',
+            '-': 'float',
+            '*': 'float',
+            '/': 'float',
+            '<': 'bool',
+            '>': 'bool',
+            '==': 'bool',
+            '!=':'bool',
+        },
+        char:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        string:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        bool:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        }  
+    },
+    char:{
+        int:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        float:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        char:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        string:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        bool:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        }  
+    },
+    string:{
+        int:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        float:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        char:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        string:{
+            '+': 'string',
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        bool:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        }  
+    },
+    bool:{
+        int:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        float:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        char:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        string:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': null,
+            '!=':null,
+        },
+        bool:{
+            '+': null,
+            '-': null,
+            '*': null,
+            '/': null,
+            '<': null,
+            '>': null,
+            '==': 'bool',
+            '!=':'bool',
+        }  
+    } 
+}
 
 class condigoInt{
 
@@ -7,12 +270,11 @@ class condigoInt{
         this.cuadruplos = new cuadruplo();
         this.counter = 0;
         this.counterT = 0;
-        this.pOPer = [];
+        this.pOper = [];
         this.pilaO = []
         this.pTipos = []
         this.pSaltos = []
         this.avail = []
-        this.cuboSemantico = cuboSemantico 
     }
 
     //Funciones globales
@@ -22,16 +284,16 @@ class condigoInt{
     }
 
     pOperPeek = () => {
-        return pOper[pOper.length-1];
+        return this.pOper[this.pOper.length-1]
     }
 
-    addOperando = (operando,tipo) => {
+    addOperando = (operando, tipo) => {
         this.pilaO.push(operando);
         this.pTipos.push(tipo)
     }
 
     addOperador = (oper) => {
-        this.pOPer.push(oper);
+        this.pOper.push(oper);
     }
 
     // Expr Aritmeticas
@@ -45,18 +307,20 @@ class condigoInt{
     }
 
     validarSumaResta = () =>{
-        if (this.pOperPeek == '+' || this.pOperPeek == '-'){
+        if (this.pOperPeek() == '+' || this.pOperPeek() == '-'){
             let opRVal = this.pilaO.pop()
             let opLVal = this.pilaO.pop()
             let oper = this.pOper.pop()
             let opRType = this.pTipos.pop()
             let opLType = this.pTipos.pop()
-            let resultType = validateType(opLType, opRType, oper)
+            let resultType = this.validateType(opLType, opRType, oper)
 
             if (resultType != null){
                 let res = 't' + this.counterT
+                this.addOperando(res, resultType)
                 this.counterT+= 1;
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
+                
                 //if any operand were a temporal space return it to avail?
             }else{
                 console.log("Error, type mismatch");
@@ -65,16 +329,17 @@ class condigoInt{
     }
 
     validarMultDiv = () => {
-        if (this.pOperPeek == '*' || this.pOperPeek == '/'){
+        if (this.pOperPeek() == '*' || this.pOperPeek() == '/'){
             let opRVal = this.pilaO.pop()
             let opLVal = this.pilaO.pop()
             let oper = this.pOper.pop()
             let opRType = this.pTipos.pop()
             let opLType = this.pTipos.pop()
-            let resultType = validateType(opLType, opRType, oper)
+            let resultType = this.validateType(opLType, opRType, oper)
 
             if (resultType != null){
                 let res = 't' + this.counterT
+                this.addOperando(res, resultType)
                 this.counterT+= 1;
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
                 //if any operand were a temporal space return it to avail?
@@ -84,43 +349,62 @@ class condigoInt{
         }
     }
 
+    validarCond = () => {
+        if (this.pOperPeek() == '>' || this.pOperPeek() == '<' || this.pOperPeek() == '>=' || this.pOperPeek() == '<='){
+            let opRVal = this.pilaO.pop()
+            let opLVal = this.pilaO.pop()
+            let oper = this.pOper.pop()
+            let opRType = this.pTipos.pop()
+            let opLType = this.pTipos.pop()
+            let resultType = this.validateType(opLType, opRType, oper)
 
+            if (resultType != null){
+                let res = 't' + this.counterT
+                this.addOperando(res, resultType)
+                this.counterT+= 1;
+                this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
+                //if any operand were a temporal space return it to avail?
+            }else{
+                console.log("Error, type mismatch");
+            }
+        }
+    }
     //Estatutos Lineales 
 
     writeStmt = () =>{
         this.agregarCuadr(['WRITE', '', '',this.pilaO.pop()])
     }
 
-    readStms = () => {
-        this.agregarCuadr(['READ', '', '', this.pilaO.pop])
+    readStmt = () => {
+        this.agregarCuadr(['READ', '', '', this.pilaO.pop()])
     }
 
     callVoidStmt = () => {
-        this.agregarCuadr(['LLAMADA_VOID', '', '', this.pilaO.pop])
+        this.agregarCuadr(['LLAMADA_VOID', '', '', this.pilaO.pop()])
     }
 
     asignStmt = () => {
-        this.agregarCuadr([this.pOPer.pop(), this.pilaO.pop, this.pilaO.pop, ''])
+        let assigner = this.pilaO.pop();
+        let res = this.pilaO.pop();
+        this.agregarCuadr([this.pOper.pop(), res, '', assigner])
     }
 
     returnStmt = () => {
-        this.agregarCuadr(['RETURN', '', '', this.pilaO.pop])
+        this.agregarCuadr(['RETURN', '', '', this.pilaO.pop()])
     }
 
     gotoMain = () =>{
         this.agregarCuadr(["GOTO",'main','',''])
-
     }
 
     fillMain = () =>{
-
+        this.cuadruplos.fillCuad(0, this.counter)
     }
 
     //Estatus no lineales
 
     ifStmt = () => {
         let exp_type = this.pTipos.pop()
-
         if(exp_type != 'bool'){
             console.log('error, type mismatch');
         }else{
@@ -132,14 +416,14 @@ class condigoInt{
 
     fill_ifStmt = () =>{
         let expPos = this.pSaltos.pop()
-        fillCuadr(expPos, this.counter)
+        this.cuadruplos.fillCuad(expPos, this.counter)
     }
 
     elseStmt = () => {
         this.agregarCuadr(['GOTO', '', '', ''])
         let falsePos = this.pSaltos.pop()
         this.pSaltos.push(this.counter-1)
-        fillCuadr(falsePos,this.counter,)
+        this.cuadruplos.fillCuad(falsePos,this.counter)
     }
 
     whileStmtMarkStart = () => {
@@ -160,16 +444,14 @@ class condigoInt{
     endWhileStmt = () => {
         let endPos = this.pSaltos.pop()
         let returnPos = this.pSaltos.pop()
-        this.agregarCuadr(['GOTO',,'','returnPos'])
-        fillCuadr(endPos,this.counter)
+        this.agregarCuadr(['GOTO','','',returnPos])
+        this.cuadruplos.fillCuad(endPos,this.counter)
     }
 
     //no se jajaja
     forStmt = () => {
         
     }
-
-    
 }
 
 module.exports = condigoInt;

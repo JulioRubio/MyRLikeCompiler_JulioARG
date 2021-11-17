@@ -1,7 +1,16 @@
+program MyRLike;
+vars
+    int: i;
+    int: j;
+    int: p;
+    float: valor;
+
+
 function int fact(int: j)
 vars int: i;{
-    i = k + (p - j * 2 + j);
-    if(j == 1){
+    j = 10 * 15;
+    i = j / 2;
+    if(i == 1){
         return(j);
     }else{
         return(j);
@@ -11,10 +20,21 @@ vars int: i;{
 function void calcula(int: y)
 vars int: x;{
     x=1;
+    y = x;
     while(x < 11) do{
         y = y * 10;
         x = x + 1;
     }
-    write(arr);
     write("asum");
+}
+
+function void main ()
+vars float: temp;
+{
+    read(y);
+    read(valor);
+    temp = valor / 10.5;
+    j = y * 2;
+    calcula(p);
+    i = fact(j);
 }

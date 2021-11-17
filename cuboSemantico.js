@@ -260,10 +260,3 @@ let cuboSemantico = {
         }  
     } 
 }
-
-// let getType = () =>{
-//     let oper = '+'
-//     let r = 'int'
-//     let l = 'int'
-//     console.log(cuboSemantico[r][l][oper]); 
-// }
