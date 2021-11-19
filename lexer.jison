@@ -16,10 +16,10 @@
 "-"                 return '-';
 "*"                 return '*';
 "/"                 return '/';
-">"                 return '>';
-"<"                 return '<';
 ">="                 return '>=';
 "<="                 return '<=';
+">"                 return '>';
+"<"                 return '<';
 "!="                return '!=';
 "=="                return '==';
 "="                 return '=';
@@ -70,10 +70,17 @@
 
 /* Asociación de operadores y precedencia */
 
+
+
 %right '='
+%left '!=' '=='
 %left '<' '>' '<=' '>=' '==' '!='
 %left '+' '-'
 %left '*' '/'
+
+
+ 
+
 
 %start PROGRAMA
 
@@ -84,8 +91,8 @@ PROGRAMA
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
 		// console.log("=============================== ")
 		// console.log ("")
-		console.log("CUADRUPLOS ")
-		console.log(codigo.cuadruplos.cuads)
+		// console.log("CUADRUPLOS ")
+		// console.log(codigo.cuadruplos.cuads)
 		// console.log ("")
 		// console.log("=============================== ")
 		// console.log("Funciones ")
@@ -102,23 +109,23 @@ PROGRAMA
 	}
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
-		// console.log("=============================== ")
-		// console.log ("")
+		console.log("=============================== ")
+		console.log ("")
 		console.log("CUADRUPLOS ")
 		console.log(codigo.cuadruplos.cuads)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Funciones ")
-		// console.log ("")
-		// console.log(funcTable.funcTable)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Variables ")
-		// console.log ("")
-		// for(const table in funcTable.funcTable){
-		// 	let tableItem = funcTable.getFunc(table);
-		// 	console.log(table, tableItem.varTable.varsTable)
-		// }
+		console.log ("")
+		console.log("=============================== ")
+		console.log("Funciones ")
+		console.log ("")
+		console.log(funcTable.funcTable)
+		console.log ("")
+		console.log("=============================== ")
+		console.log("Variables ")
+		console.log ("")
+		for(const table in funcTable.funcTable){
+			let tableItem = funcTable.getFunc(table);
+			console.log(table, tableItem.varTable.varsTable)
+		}
 	}
 ;
 
@@ -127,22 +134,33 @@ gotoMain
 		codigo.gotoMain();
 	};
 
+currentCuadCounter
+	:{
+		cuadCounter = codigo.cuadruplos.counter;
+	}
+;
 
 FUNCTION 
-	: function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $2, name:$3, varTable: varT})
+	: function FUNC_TYPE id '(' OPT_PARAMS ')' currentCuadCounter BLOQUE {
+		funcTable.insertFunc({type: $2, name:$3, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
 		varT = new tablaVariables();
+		funcVarCounter = 0;
+		funcParamCounter = 0;
 	}
-	| FUNCTION function FUNC_TYPE id '(' OPT_PARAMS ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $3, name:$4, varTable: varT})
+	| FUNCTION function FUNC_TYPE id '(' OPT_PARAMS ')' currentCuadCounter BLOQUE {
+		funcTable.insertFunc({type: $3, name:$4, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
 		varT = new tablaVariables();
+		funcVarCounter = 0;
+		funcParamCounter = 0;
 	}
 ;
 
 MAIN 
-	: function void main fillMain'('  ')' FUNC_OPT_VARS BLOQUE {
-		funcTable.insertFunc({type: $2, name:$3, varTable: varT})
+	: function void main fillMain'('  ')' currentCuadCounter BLOQUE {
+		funcTable.insertFunc({type: $2, name:$3, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter, varUpperLimit: pointerLocal})
 		varT = new tablaVariables();
+		funcVarCounter = 0;
+		funcParamCounter = 0;
 	}
 ;
 
@@ -163,7 +181,7 @@ TYPE
 ;
 
 BLOQUE 
-	: '{' ESTATUTOS '}'
+	: '{' FUNC_OPT_VARS ESTATUTOS '}'
 ;
 
 PROG_OPT_VARS
@@ -173,7 +191,7 @@ PROG_OPT_VARS
 
 
 FUNC_OPT_VARS
-	: vars  FUNC_VARS
+	: vars FUNC_VARS
 	|
 ;
 
@@ -196,11 +214,13 @@ FUNC_VARS
 		pointerLocal = mm.getCurrentLocalPointer($2);
 		mm.inserLocal($2, $4, '')
 		varT.insertVar($4, {tipo: $2, dir: pointerLocal})
+		funcVarCounter += 1;
 	}
 	| TYPE ':' id ';'{
 		pointerLocal = mm.getCurrentLocalPointer($1);
 		mm.inserLocal($1, $3, '')
 		varT.insertVar($3, {tipo: $1, dir: pointerLocal})
+		funcVarCounter += 1;
 	}
 ;
 
@@ -215,7 +235,24 @@ OPT_PARAMS
 ;
 
 PARAMS 
-	: TYPE ':' id MULT_PARAMS
+	: TYPE getParamType ':' id insertParamAsVar MULT_PARAMS
+;
+
+getParamType
+	:{
+		tipoParam = $1;
+		pointerLocal = mm.getCurrentLocalPointer($1);
+		//console.log("got pointer",pointerLocal)
+	}
+;
+
+insertParamAsVar
+	:{
+		// console.log("inser", pointerLocal, $1, '')
+		mm.inserLocal(pointerLocal, $1, '')
+		varT.insertVar($1, {tipo: tipoParam, dir: pointerLocal})
+		funcParamCounter+=1;
+	}
 ;
 
 MULT_PARAMS 
@@ -230,7 +267,7 @@ ESTATUTOS
 
 ESTATUTO	
 	: ASIGNACION
-	| LLAMADA_VOID
+	| LLAMADA ';'
 	| RETURN
 	| READ
 	| WRITE
@@ -245,15 +282,32 @@ ASIGNACION
 		codigo.addOperador($2)
 		codigo.asignStmt()
 	}
-	| id '=' LLAMADA_VOID
+	| id '=' LLAMADA
 ;
 
-LLAMADA_VOID
-	: id '(' EXPRESSION MULT_EXPRESSION ')' ';'
+LLAMADA
+	: id '(' genERA CALL_PARAMS ')'
+;
+
+genERA
+	:{
+		codigo.genEra()
+	}
+;
+
+CALL_PARAMS
+	: EXP generatePARAM MULT_EXPRESSION
+	| 
 ;
 
 RETURN
-	: return '(' EXP ')' ';'
+	: return '(' EXP ')' ';' returnStmt
+;
+
+returnStmt
+	:{
+		codigo.returnStmt()
+	}
 ;
 
 READ
@@ -283,8 +337,14 @@ WRITE
 ;
 
 WRITE_TYPE
-	: EXPRESSION MULT_WRITE
+	: EXPRESSION addWriteCuad MULT_WRITE
 	| CTE_S  MULT_WRITE
+;
+
+addWriteCuad
+	:{
+		codigo.writeStmt()
+	}
 ;
 
 MULT_WRITE
@@ -348,7 +408,6 @@ EXPRESSION
 	| EXP EXPRESSION_CONJ EXPRESSION
 	| EXP EXPRESSION_TYPE EXP validarCond
 	| EXP
-
 ;
 
 validarCond
@@ -358,10 +417,10 @@ validarCond
 ;
 
 EXPRESSION_TYPE
-	: '<' addCondOper
-	| '>' addCondOper
-	| '<=' addCondOper
+	: '<=' addCondOper
 	| '>=' addCondOper
+	| '<' addCondOper
+	| '>' addCondOper
 	| '==' addCondOper
 	| '!=' addCondOper
 ;
@@ -378,8 +437,14 @@ EXPRESSION_CONJ
 ;
 
 MULT_EXPRESSION
-	: ',' EXPRESSION MULT_EXPRESSION
+	: ',' EXP generatePARAM MULT_EXPRESSION
 	|
+;
+
+generatePARAM
+	: {
+
+	}
 ;
 
 EXP
@@ -421,9 +486,18 @@ addOper
 ;
 
 FACTOR	
-	: '(' EXPRESSION ')'
-	| EXP_TYPE VAR_CTE
+	: EXP_TYPE VAR_CTE
 	| VAR_CTE
+	| LLAMADA
+	| '(' beginParenthesis EXP popPar ')'
+;
+
+beginParenthesis
+	: {codigo.addOperador($1)}
+;
+
+popPar 
+	: {codigo.consumeOperador()}
 ;
 
 VAR_CTE
@@ -483,5 +557,10 @@ let globalVarTable = new tablaVariables();
 let pointerGlobal;
 let pointerLocal;
 
+let tipoParam;
+
+let funcVarCounter = 0;
+let funcParamCounter = 0;
+let cuadCounter = 0;
 
 

@@ -1,40 +1,10 @@
-program MyRLike;
-vars
+program patito;
+vars 
     int: i;
     int: j;
     int: p;
-    float: valor;
-
-
-function int fact(int: j)
-vars int: i;{
-    j = 10 * 15;
-    i = j / 2;
-    if(i == 1){
-        return(j);
-    }else{
-        return(j);
-    }
-}
-
-function void calcula(int: y)
-vars int: x;{
-    x=1;
-    y = x;
-    while(x < 11) do{
-        y = y * 10;
-        x = x + 1;
-    }
-    write("asum");
-}
-
-function void main ()
-vars float: temp;
-{
-    read(y);
-    read(valor);
-    temp = valor / 10.5;
-    j = y * 2;
-    calcula(p);
-    i = fact(j);
+    
+int fact(int j){
+    vars 
+        int: i;
 }

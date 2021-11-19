@@ -10,6 +10,8 @@ let cuboSemantico = {
             '/': 'int',
             '<': 'bool',
             '>': 'bool',
+            '<=': 'bool',
+            '>=': 'bool',
             '==': 'bool',
             '!=':'bool',
         },
@@ -20,6 +22,8 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '<=': 'bool',
+            '>=': 'bool',
             '==': 'bool',
             '!=':'bool',
         },
@@ -30,6 +34,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -40,6 +46,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -50,6 +58,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         }  
@@ -62,6 +72,8 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '<=': 'bool',
+            '>=': 'bool',
             '==': 'bool',
             '!=':'bool',
         },
@@ -72,6 +84,8 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '<=': 'bool',
+            '>=': 'bool',
             '==': 'bool',
             '!=':'bool',
         },
@@ -82,6 +96,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -92,6 +108,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -102,6 +120,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         }  
@@ -114,6 +134,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -124,6 +146,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -134,8 +158,10 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': null,
-            '!=':null,
+            '<=': null,
+            '>=': null,
+            '==': 'bool',
+            '!=':'bool',
         },
         string:{
             '+': 'string',
@@ -144,8 +170,10 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': null,
-            '!=':null,
+            '<=': null,
+            '>=': null,
+            '==': 'bool',
+            '!=':'bool',
         },
         bool:{
             '+': null,
@@ -154,6 +182,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         }  
@@ -166,6 +196,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -176,6 +208,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -186,8 +220,10 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': null,
-            '!=':null,
+            '<=': null,
+            '>=': null,
+            '==': 'bool',
+            '!=':'bool',
         },
         string:{
             '+': 'string',
@@ -196,8 +232,10 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': null,
-            '!=':null,
+            '<=': null,
+            '>=': null,
+            '==': 'bool',
+            '!=':'bool',
         },
         bool:{
             '+': null,
@@ -206,6 +244,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         }  
@@ -218,6 +258,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -228,6 +270,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -238,6 +282,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -248,6 +294,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -258,6 +306,8 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '<=': null,
+            '>=': null,
             '==': 'bool',
             '!=':'bool',
         }  
@@ -294,6 +344,10 @@ class condigoInt{
 
     addOperador = (oper) => {
         this.pOper.push(oper);
+    }
+
+    consumeOperador = () =>{
+        this.pOper.pop()
     }
 
     // Expr Aritmeticas
@@ -350,7 +404,7 @@ class condigoInt{
     }
 
     validarCond = () => {
-        if (this.pOperPeek() == '>' || this.pOperPeek() == '<' || this.pOperPeek() == '>=' || this.pOperPeek() == '<='){
+        if (this.pOperPeek() == '>' || this.pOperPeek() == '<' || this.pOperPeek() == '>=' || this.pOperPeek() == '<=' || this.pOperPeek() == '!=' || this.pOperPeek() == '=='){
             let opRVal = this.pilaO.pop()
             let opLVal = this.pilaO.pop()
             let oper = this.pOper.pop()
@@ -406,7 +460,7 @@ class condigoInt{
     ifStmt = () => {
         let exp_type = this.pTipos.pop()
         if(exp_type != 'bool'){
-            console.log('error, type mismatch');
+            console.error('type mismatch');
         }else{
             let res = this.pilaO.pop()
             this.agregarCuadr(['GOTOF', res, '', ''])
@@ -451,6 +505,12 @@ class condigoInt{
     //no se jajaja
     forStmt = () => {
         
+    }
+
+    //functions
+
+    genEra = () => {
+        this.agregarCuadr(['ERA', '', '', ''])
     }
 }
 

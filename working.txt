@@ -5,7 +5,7 @@ vars
     int: p;
     float: valor;
 
-function int fact(int: h){
+function int fact(){
     vars 
         int: i;
         int: failure;
@@ -24,23 +24,8 @@ function int fact(int: h){
     }
 }
 
-function int fact2(int: h){
-    vars 
-        int: i;
-        int: failure;
-        int: success;
-    j = valor / 15;
-    i = j / 2;
-    if(j > 5 & i != 1){
-        success = p * 2;
-        write("success", success);
-        return(success);
-
-    }else{
-        failure = p / 2.5;
-        write("failure ",failure );
-        return(failure);
-    }
+function void what(){
+    what();
 }
 
 function void main (){
