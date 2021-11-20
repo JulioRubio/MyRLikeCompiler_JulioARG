@@ -20,7 +20,7 @@ function int fact(int: h){
 
     }else{
         failure = p / 2.5;
-        write("failure ",failure );
+        write("failure ",failure);
         return(failure);
     }
 }
@@ -44,6 +44,10 @@ function float fact2(int: h, int:g, float: counter){
     }
 }
 
+function void useless(){
+    write("hi i am pretty useless huh");
+}
+
 function void main (){
     vars 
         float: temp;
@@ -55,11 +59,13 @@ function void main (){
     temp = valor / 10.5;
     while (j < 100){
         if(j > 0){
-            j = 1;
+            j = fact(y);
         }
         else{
             i = i + i;
         }
     }
-    
+    write(fact2(1,2,10*5));
+
+    useless();
 }

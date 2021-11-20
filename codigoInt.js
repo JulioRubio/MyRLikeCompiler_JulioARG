@@ -188,68 +188,6 @@ let cuboSemantico = {
             '!=':null,
         }  
     },
-    string:{
-        int:{
-            '+': 'string',
-            '-': null,
-            '*': null,
-            '/': null,
-            '<': null,
-            '>': null,
-            '<=': null,
-            '>=': null,
-            '==': null,
-            '!=':null,
-        },
-        float:{
-            '+': 'string',
-            '-': null,
-            '*': null,
-            '/': null,
-            '<': null,
-            '>': null,
-            '<=': null,
-            '>=': null,
-            '==': null,
-            '!=':null,
-        },
-        char:{
-            '+': 'string',
-            '-': null,
-            '*': null,
-            '/': null,
-            '<': null,
-            '>': null,
-            '<=': null,
-            '>=': null,
-            '==': 'bool',
-            '!=':'bool',
-        },
-        string:{
-            '+': 'string',
-            '-': null,
-            '*': null,
-            '/': null,
-            '<': null,
-            '>': null,
-            '<=': null,
-            '>=': null,
-            '==': 'bool',
-            '!=':'bool',
-        },
-        bool:{
-            '+': null,
-            '-': null,
-            '*': null,
-            '/': null,
-            '<': null,
-            '>': null,
-            '<=': null,
-            '>=': null,
-            '==': null,
-            '!=':null,
-        }  
-    },
     bool:{
         int:{
             '+': null,
@@ -570,10 +508,12 @@ class condigoInt{
     }
 
     goSub = (calledFunc) =>{
+        this.pilaO.push(calledFunc)
         this.agregarCuadr(['GOSUB', '', '', calledFunc])
     }
 
     endFunc = () =>{
+        this.pilaO.pop()
         this.agregarCuadr(['ENDFUNC','','',''])
     }
 
