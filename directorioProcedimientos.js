@@ -14,7 +14,14 @@ let directorioProcedimientos = class {
         }
     }
 
+    addToFunc = (name, func) =>{
+        this.funcTable[func.name] = func;
+    }
+
     getFunc = (name) =>{
+        if (!this.funcTable.hasOwnProperty(name)){
+            throw new Error(`funcion ${name} no ha sido declarada!`)
+        }
         return this.funcTable[name];
     }
 

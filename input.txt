@@ -10,9 +10,10 @@ function int fact(int: h){
         int: i;
         int: failure;
         int: success;
+
     j = valor / 15;
     i = j / 2;
-    if(j > 5 & i != 1){
+    if(j > 5 & i != 1 | j == 0){
         success = p * 2;
         write("success", success);
         return(success);
@@ -24,7 +25,7 @@ function int fact(int: h){
     }
 }
 
-function int fact2(int: h){
+function float fact2(int: h, int:g, float: counter){
     vars 
         int: i;
         int: failure;
@@ -47,13 +48,14 @@ function void main (){
     vars 
         float: temp;
         int: y;
+        int:fact;
     read(y);
     read(valor);
-    write(valor, valor, j + 1);
+    write("valor", valor, j + 1);
     temp = valor / 10.5;
     while (j < 100){
         if(j > 0){
-            j = fact();
+            j = 1;
         }
         else{
             i = i + i;

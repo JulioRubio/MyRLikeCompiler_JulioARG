@@ -73,7 +73,8 @@
 
 
 %right '='
-%left '!=' '=='
+%left '|'
+%left '&'
 %left '<' '>' '<=' '>=' '==' '!='
 %left '+' '-'
 %left '*' '/'
@@ -113,19 +114,23 @@ PROGRAMA
 		console.log ("")
 		console.log("CUADRUPLOS ")
 		console.log(codigo.cuadruplos.cuads)
-		console.log ("")
-		console.log("=============================== ")
-		console.log("Funciones ")
-		console.log ("")
-		console.log(funcTable.funcTable)
-		console.log ("")
-		console.log("=============================== ")
-		console.log("Variables ")
-		console.log ("")
-		for(const table in funcTable.funcTable){
-			let tableItem = funcTable.getFunc(table);
-			console.log(table, tableItem.varTable.varsTable)
-		}
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Funciones ")
+		// console.log ("")
+		// console.log(funcTable.funcTable)
+		// console.log ("")
+		// console.log("=============================== ")
+		// console.log("Variables ")
+		// console.log ("")
+		// for(const table in funcTable.funcTable){
+		// 	let tableItem = funcTable.getFunc(table);
+		// 	console.log(table, tableItem.varTable.varsTable)
+		// }
+
+		console.log(codigo.pOper)
+		console.log(codigo.pilaO)
+		console.log(codigo.pTipos)
 	}
 ;
 
@@ -140,27 +145,42 @@ currentCuadCounter
 	}
 ;
 
-FUNCTION 
-	: function FUNC_TYPE id '(' OPT_PARAMS ')' currentCuadCounter BLOQUE {
-		funcTable.insertFunc({type: $2, name:$3, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
-		varT = new tablaVariables();
-		funcVarCounter = 0;
-		funcParamCounter = 0;
+addDataToFunc
+	:{
+		cuadCounter = codigo.cuadruplos.counter;
+		funcTable.addToFunc($-3, {type: $-6, name:$-5, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
 	}
-	| FUNCTION function FUNC_TYPE id '(' OPT_PARAMS ')' currentCuadCounter BLOQUE {
-		funcTable.insertFunc({type: $3, name:$4, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
+;
+
+FUNCTION 
+	: function FUNC_TYPE id insertFunc '(' OPT_PARAMS ')' '{' FUNC_OPT_VARS addDataToFunc ESTATUTOS '}' {
 		varT = new tablaVariables();
 		funcVarCounter = 0;
 		funcParamCounter = 0;
+		codigo.endFunc();
+	}
+	| FUNCTION function FUNC_TYPE id insertFunc '(' OPT_PARAMS ')' '{' FUNC_OPT_VARS addDataToFunc ESTATUTOS '}' {
+		varT = new tablaVariables();
+		funcVarCounter = 0;
+		funcParamCounter = 0;
+		codigo.endFunc();
+	}
+;
+
+//puedo usar 0 para ir mas atras, que lastima que apenas me doy cuenta :v
+insertFunc
+	:{
+		funcTable.insertFunc({type: $0, name:$1, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter})
 	}
 ;
 
 MAIN 
-	: function void main fillMain'('  ')' currentCuadCounter BLOQUE {
+	: function void main fillMain'('  ')' '{' FUNC_OPT_VARS ESTATUTOS '}' {
 		funcTable.insertFunc({type: $2, name:$3, varTable: varT, varCounter: funcVarCounter, paramCounter: funcParamCounter, firstCuad: cuadCounter, varUpperLimit: pointerLocal})
 		varT = new tablaVariables();
 		funcVarCounter = 0;
 		funcParamCounter = 0;
+		codigo.endFunc();
 	}
 ;
 
@@ -181,7 +201,7 @@ TYPE
 ;
 
 BLOQUE 
-	: '{' FUNC_OPT_VARS ESTATUTOS '}'
+	: '{' ESTATUTOS '}'
 ;
 
 PROG_OPT_VARS
@@ -257,7 +277,7 @@ insertParamAsVar
 
 MULT_PARAMS 
 	: ',' PARAMS
-	|
+	| 
 ;
 
 ESTATUTOS
@@ -278,7 +298,18 @@ ESTATUTO
 
 ASIGNACION
 	: id '=' EXPRESSION ';'{
-		codigo.addOperando($1)
+
+		readLocal = varT.getVar($1);
+		readGlobal = globalVarTable.getVar($1)
+		// let readType;
+		// let readMemoria;
+		if(readLocal != undefined){
+			// readMemoria = mm.getMapaLocal(readLocal.tipo)
+			// // mm.updateLocal(readLocal.tipo, readLocal.dir,input )
+			codigo.addOperando($1, readLocal.tipo)
+		}else if(readGlobal != undefined){
+			codigo.addOperando($1, readGlobal.tipo)
+		}
 		codigo.addOperador($2)
 		codigo.asignStmt()
 	}
@@ -286,18 +317,25 @@ ASIGNACION
 ;
 
 LLAMADA
-	: id '(' genERA CALL_PARAMS ')'
+	: id genERA '(' CALL_PARAMS ')'{
+		codigo.goSub($1);
+	}
 ;
 
 genERA
 	:{
-		codigo.genEra()
+		funcCalled = funcTable.getFunc($1)
+		codigo.genEra($1)
+		funcParamCounter = funcCalled.paramCounter;
+		callParamCounter = 1;
+
+		console.log("funcion", funcCalled.name, "con par", funcParamCounter)
 	}
 ;
 
 CALL_PARAMS
-	: EXP generatePARAM MULT_EXPRESSION
-	| 
+	: generatePARAM MULT_EXPRESSION
+	| validateNoMoreParams
 ;
 
 RETURN
@@ -317,8 +355,8 @@ READ
 //ni idea
 assignReadVal
 	:{
-		let readLocal = varT.getVar($1);
-		let readGlobal = globalVarTable.getVar($1)
+		readLocal = varT.getVar($1);
+		readGlobal = globalVarTable.getVar($1)
 		// let readType;
 		// let readMemoria;
 		if(readLocal != undefined){
@@ -337,8 +375,15 @@ WRITE
 ;
 
 WRITE_TYPE
-	: EXPRESSION addWriteCuad MULT_WRITE
-	| CTE_S  MULT_WRITE
+	: EXP addWriteCuad MULT_WRITE
+	| CTE_S stringWriteStmt MULT_WRITE
+;
+
+stringWriteStmt
+	:{
+		codigo.addOperando($1, "string");
+		codigo.writeStmt()
+	}
 ;
 
 addWriteCuad
@@ -400,14 +445,17 @@ endWhileStmt
 ;
 
 FOR
-	: for id '=' EXP to EXP do BLOQUE
+	: for id '=' EXP to EXP do  BLOQUE
 ;
 
 EXPRESSION
-	: EXP EXPRESSION_TYPE EXP EXPRESSION_CONJ EXPRESSION
-	| EXP EXPRESSION_CONJ EXPRESSION
-	| EXP EXPRESSION_TYPE EXP validarCond
-	| EXP
+	: EXPRESSION_COND EXPRESSION_CONJ EXPRESSION validarCond
+	| EXPRESSION_COND 
+	| EXP 
+;
+
+EXPRESSION_COND
+	:EXP EXPRESSION_TYPE EXP validarCond
 ;
 
 validarCond
@@ -432,18 +480,28 @@ addCondOper
 ;
 
 EXPRESSION_CONJ
-	: '&' 
-	| '|'
+	: '&' addCondOper
+	| '|' addCondOper
 ;
 
 MULT_EXPRESSION
-	: ',' EXP generatePARAM MULT_EXPRESSION
-	|
+	: ',' generatePARAM MULT_EXPRESSION
+	| validateNoMoreParams
+;
+
+validateNoMoreParams
+	:{
+		if(callParamCounter != funcParamCounter+1){
+			throw new Error(`Error, llamada a funcion ${funcCalled.name} no cuenta con el numero de parametros correctos`)
+		}
+	}
 ;
 
 generatePARAM
-	: {
-
+	: EXP {
+		codigo.generateParam(`p${callParamCounter}`)
+		console.log(callParamCounter)
+		callParamCounter+=1;
 	}
 ;
 
@@ -562,5 +620,12 @@ let tipoParam;
 let funcVarCounter = 0;
 let funcParamCounter = 0;
 let cuadCounter = 0;
+let callParamCounter = 1;
 
+
+let funcCalled;
+
+
+let readLocal;
+let readGlobal;
 

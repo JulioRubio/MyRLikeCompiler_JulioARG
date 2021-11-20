@@ -14,10 +14,12 @@ class mapaMemoria{
 
 
         //int, float, char
-        this.sizeFragmento = Math.ceil(this.size / 3);
+        this.sizeFragmento = this.size / 3;
+
+        //console.log(this.sizeFragmento);
 
         this.intDirInicio =  dirInicio;
-        this.intFin = this.sizeFragmento - 1 + dirInicio;
+        this.intFin = dirInicio + this.sizeFragmento - 1;
 
         // console.log("------------------------------------------");
         // console.log("DIR INT");
@@ -26,8 +28,8 @@ class mapaMemoria{
         // console.log("DIR FIN", this.intFin);
 
 
-        this.floatDirInicio = this.sizeFragmento + dirInicio;
-        this.floatFin = this.sizeFragmento * 2 - 1 + dirInicio;
+        this.floatDirInicio = dirInicio +  this.sizeFragmento;
+        this.floatFin = dirInicio +  this.sizeFragmento * 2 - 1;
 
         // console.log("------------------------------------------");
 
@@ -38,7 +40,7 @@ class mapaMemoria{
         // console.log("DIR FIN", this.floatFin);
 
 
-        this.charDirInicio = this.sizeFragmento * 2 + dirInicio;
+        this.charDirInicio = dirInicio +  this.sizeFragmento * 2;
         this.charFin = this.dirFin;
 
         // console.log("------------------------------------------");

@@ -310,6 +310,8 @@ let cuboSemantico = {
             '>=': null,
             '==': 'bool',
             '!=':'bool',
+            '|': 'bool',
+            '&':'bool',
         }  
     } 
 }
@@ -357,6 +359,9 @@ class condigoInt{
     }
 
     validateType = (opLType, opRType, oper) => {
+        // console.log(this.pOper)
+		// console.log(this.pilaO)
+		// console.log(this.pTipos)
         return cuboSemantico[opLType][opRType][oper]
     }
 
@@ -404,12 +409,13 @@ class condigoInt{
     }
 
     validarCond = () => {
-        if (this.pOperPeek() == '>' || this.pOperPeek() == '<' || this.pOperPeek() == '>=' || this.pOperPeek() == '<=' || this.pOperPeek() == '!=' || this.pOperPeek() == '=='){
+        if (this.pOperPeek() == '>' || this.pOperPeek() == '<' || this.pOperPeek() == '>=' || this.pOperPeek() == '<=' || this.pOperPeek() == '!=' || this.pOperPeek() == '==' || this.pOperPeek() == '&' || this.pOperPeek() == '|' ){
             let opRVal = this.pilaO.pop()
             let opLVal = this.pilaO.pop()
             let oper = this.pOper.pop()
             let opRType = this.pTipos.pop()
             let opLType = this.pTipos.pop()
+            // console.log(opLVal, opLType, opRVal, opRType, oper);
             let resultType = this.validateType(opLType, opRType, oper)
 
             if (resultType != null){
@@ -419,31 +425,81 @@ class condigoInt{
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
                 //if any operand were a temporal space return it to avail?
             }else{
-                console.log("Error, type mismatch");
+                throw new Error("Error, type mismatch");
+            }
+        }
+    }
+
+    validarAnd = () => {
+        if (this.pOperPeek() == '&'){
+            let opRVal = this.pilaO.pop()
+            let opLVal = this.pilaO.pop()
+            let oper = this.pOper.pop()
+            let opRType = this.pTipos.pop()
+            let opLType = this.pTipos.pop()
+            console.log(opLVal, opLType, opRVal, opRType, oper);
+            let resultType = this.validateType(opLType, opRType, oper)
+
+            if (resultType != null){
+                let res = 't' + this.counterT
+                this.addOperando(res, resultType)
+                this.counterT+= 1;
+                this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
+                //if any operand were a temporal space return it to avail?
+            }else{
+                throw new Error("Error, type mismatch");
+            }
+        }
+    }
+
+    validarOr = () => {
+        if (this.pOperPeek() == '|' ){
+            let opRVal = this.pilaO.pop()
+            let opLVal = this.pilaO.pop()
+            let oper = this.pOper.pop()
+            let opRType = this.pTipos.pop()
+            let opLType = this.pTipos.pop()
+            console.log(opLVal, opLType, opRVal, opRType, oper);
+            let resultType = this.validateType(opLType, opRType, oper)
+
+            if (resultType != null){
+                let res = 't' + this.counterT
+                this.addOperando(res, resultType)
+                this.counterT+= 1;
+                this.generarCuadrAritmetic(oper, opLVal, opRVal, res)
+                //if any operand were a temporal space return it to avail?
+            }else{
+                throw new Error("Error, type mismatch");
             }
         }
     }
     //Estatutos Lineales 
 
     writeStmt = () =>{
+        this.pTipos.pop()
         this.agregarCuadr(['WRITE', '', '',this.pilaO.pop()])
     }
 
     readStmt = () => {
+        this.pTipos.pop()
         this.agregarCuadr(['READ', '', '', this.pilaO.pop()])
     }
 
     callVoidStmt = () => {
+        this.pTipos.pop()
         this.agregarCuadr(['LLAMADA_VOID', '', '', this.pilaO.pop()])
     }
 
     asignStmt = () => {
         let assigner = this.pilaO.pop();
+        this.pTipos.pop()
         let res = this.pilaO.pop();
+        this.pTipos.pop()
         this.agregarCuadr([this.pOper.pop(), res, '', assigner])
     }
 
     returnStmt = () => {
+        this.pTipos.pop()
         this.agregarCuadr(['RETURN', '', '', this.pilaO.pop()])
     }
 
@@ -509,9 +565,24 @@ class condigoInt{
 
     //functions
 
-    genEra = () => {
-        this.agregarCuadr(['ERA', '', '', ''])
+    genEra = (calledFunc) => {
+        this.agregarCuadr(['ERA', '', '', calledFunc])
+    }
+
+    goSub = (calledFunc) =>{
+        this.agregarCuadr(['GOSUB', '', '', calledFunc])
+    }
+
+    endFunc = () =>{
+        this.agregarCuadr(['ENDFUNC','','',''])
+    }
+
+    generateParam = (paramCounter) =>{
+        this.pTipos.pop()
+        this.agregarCuadr(['PARAMETRO', this.pilaO.pop(), '', paramCounter])
     }
 }
+
+// || this.pOperPeek() == '&' || this.pOperPeek() == '|' 
 
 module.exports = condigoInt;
