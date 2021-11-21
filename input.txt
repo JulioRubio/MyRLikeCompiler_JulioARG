@@ -10,7 +10,6 @@ function int fact(int: h){
         int: i;
         int: failure;
         int: success;
-
     j = valor / 15;
     i = j / 2;
     if(j > 5 & i != 1 | j == 0){
@@ -65,7 +64,7 @@ function void main (){
             i = i + i;
         }
     }
-    write(fact2(1,2,10*5));
 
+    j = fact2(1,2,10*5) + j;
     useless();
 }

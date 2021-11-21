@@ -90,6 +90,7 @@
 PROGRAMA
 	: program id ';' PROG_OPT_VARS gotoMain MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
+		codigo.endProc();
 		// console.log("=============================== ")
 		// console.log ("")
 		// console.log("CUADRUPLOS ")
@@ -101,36 +102,37 @@ PROGRAMA
 		// console.log(funcTable.funcTable)
 		// console.log ("")
 		// console.log("=============================== ")
-		// console.log("Variables ")
-		// console.log ("")
-		// for(const table in funcTable.funcTable){
-		// 	let tableItem = funcTable.getFunc(table);
-		// 	console.log(table, tableItem.varTable.varsTable)
-		// }
+		console.log("Variables ")
+		console.log ("")
+		for(const table in funcTable.funcTable){
+			let tableItem = funcTable.getFunc(table);
+			console.log(table, tableItem.varTable.varsTable)
+		}
 	}
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
+		codigo.endProc();
 		console.log("=============================== ")
 		console.log ("")
 		console.log("CUADRUPLOS ")
 		console.log(codigo.cuadruplos.cuads)
-		// console.log ("")
+		console.log ("")
 		// console.log("=============================== ")
 		// console.log("Funciones ")
 		// console.log ("")
 		// console.log(funcTable.funcTable)
 		// console.log ("")
 		// console.log("=============================== ")
-		// console.log("Variables ")
-		// console.log ("")
-		// for(const table in funcTable.funcTable){
-		// 	let tableItem = funcTable.getFunc(table);
-		// 	console.log(table, tableItem.varTable.varsTable)
-		// }
+		console.log("Variables ")
+		console.log ("")
+		for(const table in funcTable.funcTable){
+			let tableItem = funcTable.getFunc(table);
+			console.log(table, tableItem.varTable.varsTable)
+		}
 
-		console.log(codigo.pOper)
-		console.log(codigo.pilaO)
-		console.log(codigo.pTipos)
+		// console.log(codigo.pOper)
+		// console.log(codigo.pilaO)
+		// console.log(codigo.pTipos)
 	}
 ;
 
@@ -218,12 +220,12 @@ FUNC_OPT_VARS
 PROG_VARS
 	: PROG_VARS TYPE ':' id ';'{
 		pointerGlobal = mm.getCurrentGlobalPointer($2);
-		mm.inserGlobal($2, $4, '');
+		mm.inserGlobal(pointerGlobal, $2, $4, '');
 		globalVarTable.insertVar($4, {tipo: $2, dir: pointerGlobal})
 	}
 	| TYPE ':' id ';'{
 		pointerGlobal = mm.getCurrentGlobalPointer($1);
-		mm.inserGlobal($1, $3, '');
+		mm.inserGlobal(pointerGlobal, $1, $3, '');
 		globalVarTable.insertVar($3, {tipo: $1, dir: pointerGlobal})
 	}
 ;
@@ -232,13 +234,13 @@ PROG_VARS
 FUNC_VARS 
 	: FUNC_VARS TYPE ':' id ';'{
 		pointerLocal = mm.getCurrentLocalPointer($2);
-		mm.inserLocal($2, $4, '')
+		mm.inserLocal(pointerLocal, $2, $4, '')
 		varT.insertVar($4, {tipo: $2, dir: pointerLocal})
 		funcVarCounter += 1;
 	}
 	| TYPE ':' id ';'{
 		pointerLocal = mm.getCurrentLocalPointer($1);
-		mm.inserLocal($1, $3, '')
+		mm.inserLocal(pointerLocal, $1, $3, '')
 		varT.insertVar($3, {tipo: $1, dir: pointerLocal})
 		funcVarCounter += 1;
 	}
@@ -260,6 +262,7 @@ PARAMS
 
 getParamType
 	:{
+
 		tipoParam = $1;
 		pointerLocal = mm.getCurrentLocalPointer($1);
 		//console.log("got pointer",pointerLocal)
@@ -269,8 +272,9 @@ getParamType
 insertParamAsVar
 	:{
 		// console.log("inser", pointerLocal, $1, '')
-		mm.inserLocal(pointerLocal, $1, '')
+		mm.inserLocal(pointerLocal, $-2, $1, '')
 		varT.insertVar($1, {tipo: tipoParam, dir: pointerLocal})
+		// console.log("varT", varT.varsTable)
 		funcParamCounter+=1;
 	}
 ;
@@ -297,18 +301,23 @@ ESTATUTO
 ;
 
 ASIGNACION
-	: id '=' EXPRESSION ';'{
+	: id '=' EXP ';'{
 
 		readLocal = varT.getVar($1);
 		readGlobal = globalVarTable.getVar($1)
-		// let readType;
-		// let readMemoria;
+		let readType;
+		let readMemoria;
 		if(readLocal != undefined){
-			// readMemoria = mm.getMapaLocal(readLocal.tipo)
-			// // mm.updateLocal(readLocal.tipo, readLocal.dir,input )
-			codigo.addOperando($1, readLocal.tipo)
+			// console.log("metiendo a memoria local")
+			mm.updateLocal(readLocal.tipo, readLocal.dir, $3)
+			readMemoria = mm.getMapaLocal(readLocal.tipo)
+			// console.log(readMemoria)
+			codigo.addOperando(readLocal.dir, readLocal.tipo)
 		}else if(readGlobal != undefined){
-			codigo.addOperando($1, readGlobal.tipo)
+			mm.updateGlobal(readGlobal.tipo, readGlobal.dir, $3)
+			readMemoria = mm.getMapaGlobal(readGlobal.tipo)
+			// console.log(readMemoria)
+			codigo.addOperando(readGlobal.dir, readGlobal.tipo)
 		}
 		codigo.addOperador($2)
 		codigo.asignStmt()
@@ -318,7 +327,7 @@ ASIGNACION
 
 LLAMADA
 	: id genERA '(' CALL_PARAMS ')'{
-		codigo.goSub($1);
+		codigo.goSub(funcCalled.name, funcCalled.type);
 	}
 ;
 
@@ -362,9 +371,9 @@ assignReadVal
 		if(readLocal != undefined){
 			// readMemoria = mm.getMapaLocal(readLocal.tipo)
 			// // mm.updateLocal(readLocal.tipo, readLocal.dir,input )
-			codigo.addOperando($1, readLocal.tipo)
+			codigo.addOperando(readLocal.dir, readLocal.tipo)
 		}else if(readGlobal != undefined){
-			codigo.addOperando($1, readGlobal.tipo)
+			codigo.addOperando(readGlobal.dir, readGlobal.tipo)
 		}
 		codigo.readStmt()
 	}
@@ -381,7 +390,9 @@ WRITE_TYPE
 
 stringWriteStmt
 	:{
-		codigo.addOperando($1, "string");
+		pointerConst = mm.getCurrentCTEPointer('string')
+		mm.inserConst(pointerConst, 'string', '', $1)
+		codigo.addOperando(pointerConst, 'string');
 		codigo.writeStmt()
 	}
 ;
@@ -460,7 +471,7 @@ EXPRESSION_COND
 
 validarCond
 	:{
-		codigo.validarCond()
+		codigo.validarCond(mm.mapaTemp)
 	}
 ;
 
@@ -499,8 +510,8 @@ validateNoMoreParams
 
 generatePARAM
 	: EXP {
-		codigo.generateParam(`p${callParamCounter}`)
-		console.log(callParamCounter)
+		codigo.generateParam(mm.mapaTemp)
+		// console.log(callParamCounter)
 		callParamCounter+=1;
 	}
 ;
@@ -512,7 +523,7 @@ EXP
 
 semanticCreateCuadSumRes
 	:{
-		let res = codigo.validarSumaResta()
+		let res = codigo.validarSumaResta(mm.mapaTemp)
 	}
 ;
 
@@ -528,7 +539,7 @@ TERM
 
 semanticCreateCuadMultDiv
 	:{
-		codigo.validarMultDiv()
+		codigo.validarMultDiv(mm.mapaTemp)
 	}
 ;
 
@@ -560,17 +571,18 @@ popPar
 
 VAR_CTE
 	: id{
-		let tipoLocal = varT.getVarType($1);
-		let tipoGlobal = globalVarTable.getVarType($1);
+		readLocal = varT.getVar($1);
+		// console.log(readLocal)
+		readGlobal = globalVarTable.getVar($1);
+		// console.log(readGlobal)
 		let temp;
-		if(tipoLocal != undefined){
-			temp = tipoLocal;
-			codigo.addOperando($1, tipoLocal);
-
+		if(readLocal != undefined){
+			temp = readLocal.tipo;
+			codigo.addOperando(readLocal.dir, readLocal.tipo);
 		}
-		else if(tipoGlobal != undefined){
-			temp = tipoGlobal;
-			codigo.addOperando($1, tipoGlobal);
+		else if(readGlobal != undefined){
+			temp = readGlobal.tipo;
+			codigo.addOperando(readGlobal.dir, readGlobal.tipo);
 		}
 		else{
 			throw new Error (`var no declarada ${$1}`)
@@ -579,21 +591,26 @@ VAR_CTE
 		
 	}
 	| CTE_I{
-		codigo.addOperando($1, "int");
+		pointerConst = mm.getCurrentCTEPointer('int')
+		mm.inserConst(pointerConst, 'int', '', $1)
+		codigo.addOperando(pointerConst, 'int');
+
 	}
 	| CTE_F{
-		codigo.addOperando($1, "float");
+		pointerConst = mm.getCurrentCTEPointer('float')
+		mm.inserConst(pointerConst, 'float', '', $1)
+		codigo.addOperando(pointerConst, 'float');
 	}
 	| CTE_C{
-		codigo.addOperando($1, "char");
+		pointerConst = mm.getCurrentCTEPointer('char')
+		mm.inserConst(pointerConst, 'char', '', $1)
+		codigo.addOperando(pointerConst, 'char');
 	}
 ;
 %%
 
 const codigoInt = require('./codigoInt')
-const cuboSemantico = require('./cuboSemantico')
 const cuadruplos = require("./cuadruplos");
-const mapaMemoria = require('./mapaMemoria');
 const manejadorMemoria = require('./manejadorMemoria');
 const directorioProcedimientos = require('./directorioProcedimientos'); 
 const tablaVariables = require('./tablaVariables'); 
@@ -601,31 +618,20 @@ const tablaVariables = require('./tablaVariables');
 	
 //variables usadas en jison lexer
 let codigo = new codigoInt();
-let cuadruplo = new cuadruplos();
 let mm = new manejadorMemoria();
 let funcTable = new directorioProcedimientos();
-let funcVarTable = new tablaVariables();
 let varT = new tablaVariables();
 let globalVarTable = new tablaVariables();
 
-
-
-
-
 let pointerGlobal;
 let pointerLocal;
-
+let pointerConst;
 let tipoParam;
-
 let funcVarCounter = 0;
 let funcParamCounter = 0;
 let cuadCounter = 0;
 let callParamCounter = 1;
-
-
 let funcCalled;
-
-
 let readLocal;
 let readGlobal;
 

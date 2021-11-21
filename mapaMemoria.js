@@ -1,8 +1,14 @@
 
 class mapaMemoria{
-    constructor (tipoMemoria, dirInicio, dirFin){
-        //global, local, temp, const
-        this.tipoMemoria = tipoMemoria;
+    constructor (tipo, dirInicio, dirFin){
+
+        this.num = 3;
+
+        if(tipo == 'TEMP' || tipo == 'CONST'){
+            this.num = 4;
+        }
+
+        console.log(tipo, this.num)
 
         //example
         //[1000 ........ 9999]
@@ -14,7 +20,7 @@ class mapaMemoria{
 
 
         //int, float, char
-        this.sizeFragmento = this.size / 3;
+        this.sizeFragmento = Math.ceil(this.size / this.num);
 
         //console.log(this.sizeFragmento);
 
@@ -34,8 +40,8 @@ class mapaMemoria{
         // console.log("------------------------------------------");
 
 
-        // console.log("DIR INT");
-        
+        // console.log("DIR FLOAT");
+
         // console.log("DIR INICIO", this.floatDirInicio);
         // console.log("DIR FIN", this.floatFin);
 
@@ -46,8 +52,8 @@ class mapaMemoria{
         // console.log("------------------------------------------");
 
 
-        // console.log("DIR INT");
-        
+        // console.log("DIR CHAR");
+
         // console.log("DIR INICIO", this.charDirInicio);
         // console.log("DIR FIN", this.charFin);
 
@@ -61,29 +67,69 @@ class mapaMemoria{
         this.memoriaInt = new Object();
         this.memoriaFloat = new Object();
         this.memoriaChar = new Object();
-    } 
 
-    inserDir = (tipo, name, val) =>{
+
+        if(tipo == 'TEMP' || tipo == 'CONST'){
+
+            this.charDirInicio = dirInicio +  this.sizeFragmento * 2;
+            this.charFin = dirInicio +  this.sizeFragmento * 3 - 1;
+
+            this.extDirInicio = dirInicio +  this.sizeFragmento * 3;
+            this.extFin = this.dirFin;
+
+            // console.log("------------------------------------------");
+
+
+            // console.log("NEW DIR CHAR");
+
+            // console.log("DIR INICIO", this.charDirInicio);
+            // console.log("DIR FIN", this.charFin);
+
+            // console.log("------------------------------------------");
+
+
+            // console.log("DIR EXT");
+
+            // console.log("DIR INICIO", this.extDirInicio);
+            // console.log("DIR FIN", this.extFin);
+
+            this.charPointer = this.charDirInicio;
+            this.extPointer = this.extDirInicio;
+            this.memoriaExt = new Object();
+        }
+
+    }
+
+
+
+
+    inserDir = (dir, tipo, name, val) =>{
         switch (tipo){
             case 'int':{
-                this.memoriaInt[this.intPointer] = [tipo, name, val];
-                
+                this.memoriaInt[dir] = [tipo, name, val];
                 break;
             }
             case 'float':{
-                this.memoriaFloat[this.floatPointer] = [tipo, name, val];
+                this.memoriaFloat[dir] = [tipo, name, val];
                 break;
             }
             case 'char':{
-                this.memoriaChar[this.charPointer] = [tipo, name, val];
+                this.memoriaChar[dir] = [tipo, name, val];
                 break;
+            }
+            default:{
+                this.memoriaExt[dir] = [tipo, name, val];
             }
         }
     }
 
     updateVal = (tipo, dir, val) => {
+        // console.log(tipo, dir);
+        let memory = this.getVal(tipo, dir);
+        // console.log(memory)
         switch (tipo){
             case 'int':{
+                this.memoriaInt[dir] = [tipo, memory[1], val];
             }
             case 'float':{
             }
@@ -91,7 +137,6 @@ class mapaMemoria{
             }
         }
     }
-
     getVal = (tipo, dir) =>{
         switch (tipo){
             case 'int':{
@@ -103,9 +148,11 @@ class mapaMemoria{
             case 'char':{
                 return this.memoriaChar[dir];
             }
+            default:{
+                return this.memoriaExt[dir];
+            }
         }
     }
-
     getPointer = (tipo) =>{
         let pointer;
         switch (tipo){
@@ -113,7 +160,6 @@ class mapaMemoria{
                 pointer = this.intPointer;
                 this.intPointer += 1;
                 return pointer;
-                
             }
             case 'float':{
                 pointer = this.floatPointer;
@@ -125,20 +171,26 @@ class mapaMemoria{
                 this.charPointer += 1;
                 return pointer;
             }
+            default:{
+                pointer = this.extPointer;
+                this.extPointer += 1;
+                return pointer;
+            }
         }
     }
-
     getMemoria = (tipo) => {
         switch (tipo){
             case 'int':{
                 return this.memoriaInt
-                
             }
             case 'float':{
                 return this.memoriaFloat
             }
             case 'char':{
                 return this.memoriaChar
+            }
+            default:{
+                return this.memoriaExt
             }
         }
     }

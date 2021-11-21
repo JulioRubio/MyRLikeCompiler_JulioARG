@@ -16,16 +16,29 @@ class manejadorMemoria{
         return this.mapaLocal.getPointer(tipo);
     }
 
-    inserGlobal = (tipo, name, val) => {
-        this.mapaGlobal.inserDir(tipo, name, val)
+    getCurrentCTEPointer = (tipo) => {
+        return this.mapaCTE.getPointer(tipo);
     }
 
-    inserLocal = (tipo, name, val) => {
-        this.mapaLocal.inserDir(tipo, name, val)
+    inserGlobal = (dir,tipo, name, val) => {
+        this.mapaGlobal.inserDir(dir, tipo, name, val)
+    }
+
+    updateGlobal = (tipo, dir, val) =>{
+        this.mapaGlobal.updateVal(tipo, dir, val)
+    }
+
+    inserLocal = (dir, tipo, name, val) => {
+        this.mapaLocal.inserDir(dir, tipo, name, val)
     }
 
     updateLocal = (tipo, dir, val) =>{
+        // console.log(tipo, dir, val)
         this.mapaLocal.updateVal(tipo, dir, val)
+    }
+
+    inserConst = (dir, tipo, name, val) =>{
+        this.mapaCTE.inserDir(dir, tipo, name, val);
     }
 
     getMapaGlobal = (tipo) =>{

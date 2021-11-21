@@ -302,7 +302,6 @@ const manejadorMemoria = require('./manejadorMemoria');
 //variables usadas en jison lexer
 let codigo = new codigoInt();
 let cuadruplo = new cuadruplos();
-let manejador = new maquinaVirtual();
 
 let pointerGlobal;
 let currentGlobalVars = []
