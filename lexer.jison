@@ -91,6 +91,12 @@ PROGRAMA
 	: program id ';' PROG_OPT_VARS gotoMain MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
 		codigo.endProc();
+		return {
+			cuadruplos: codigo.cuadruplos.getCuads(),
+			funcTable: funcTable.funcTable,
+			globalVarTable: globalVarTable.varsTable,
+			manejadorMemoria: mm
+		}
 		// console.log("=============================== ")
 		// console.log ("")
 		// console.log("CUADRUPLOS ")
@@ -102,37 +108,48 @@ PROGRAMA
 		// console.log(funcTable.funcTable)
 		// console.log ("")
 		// console.log("=============================== ")
-		console.log("Variables ")
-		console.log ("")
-		for(const table in funcTable.funcTable){
-			let tableItem = funcTable.getFunc(table);
-			console.log(table, tableItem.varTable.varsTable)
-		}
+		// console.log("Variables ")
+		// console.log ("")
+		// for(const table in funcTable.funcTable){
+		// 	let tableItem = funcTable.getFunc(table);
+		// 	console.log(table, tableItem.varTable.varsTable)
+		// }
 	}
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
-		codigo.endProc();
-		console.log("=============================== ")
-		console.log ("")
-		console.log("CUADRUPLOS ")
-		console.log(codigo.cuadruplos.cuads)
-		console.log ("")
+		// codigo.endProc();
+		// console.log("=============================== ")
+		// console.log ("")
+		// console.log("CUADRUPLOS ")
+		// console.log(codigo.cuadruplos.cuads)
+		// console.log ("")
 		// console.log("=============================== ")
 		// console.log("Funciones ")
 		// console.log ("")
 		// console.log(funcTable.funcTable)
 		// console.log ("")
 		// console.log("=============================== ")
-		console.log("Variables ")
-		console.log ("")
-		for(const table in funcTable.funcTable){
-			let tableItem = funcTable.getFunc(table);
-			console.log(table, tableItem.varTable.varsTable)
-		}
-
+		// console.log("Variables ")
+		// console.log ("")
+		// for(const table in funcTable.funcTable){
+		// 	let tableItem = funcTable.getFunc(table);
+		// 	console.log(table, tableItem.varTable.varsTable)
+		// }
+		// console.log("+++++++++++++")
+		// console.log(mm)
 		// console.log(codigo.pOper)
 		// console.log(codigo.pilaO)
 		// console.log(codigo.pTipos)
+
+		return {
+			cuadruplos: codigo.cuadruplos.getCuads(),
+			funcTable: funcTable.funcTable,
+			globalVarTable: globalVarTable.varsTable,
+			constantes: mm.mapaCTE,
+			local: mm.mapaLocal,
+			global: mm.mapaGlobal,
+			temp: mm.mapaTemp
+		}
 	}
 ;
 
@@ -338,7 +355,7 @@ genERA
 		funcParamCounter = funcCalled.paramCounter;
 		callParamCounter = 1;
 
-		console.log("funcion", funcCalled.name, "con par", funcParamCounter)
+		//console.log("funcion", funcCalled.name, "con par", funcParamCounter)
 	}
 ;
 
@@ -472,6 +489,7 @@ EXPRESSION_COND
 validarCond
 	:{
 		codigo.validarCond(mm.mapaTemp)
+		//console.log(mm.mapaTemp)
 	}
 ;
 
@@ -614,6 +632,7 @@ const cuadruplos = require("./cuadruplos");
 const manejadorMemoria = require('./manejadorMemoria');
 const directorioProcedimientos = require('./directorioProcedimientos'); 
 const tablaVariables = require('./tablaVariables'); 
+const mapaMemoria = require('./tablaVariables'); 
 
 	
 //variables usadas en jison lexer
@@ -634,4 +653,7 @@ let callParamCounter = 1;
 let funcCalled;
 let readLocal;
 let readGlobal;
+
+
+
 

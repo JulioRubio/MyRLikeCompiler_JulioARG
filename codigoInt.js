@@ -1,6 +1,7 @@
 
 let cuadruplo = require("./cuadruplos");
 let mapaMemoria = require("./mapaMemoria");
+let manejadorMemoria = require("./manejadorMemoria")
 
 
 let cuboSemantico = {
@@ -319,7 +320,6 @@ class condigoInt{
         this.pTipos = []
         this.pSaltos = []
         this.avail = []
-
     }
 
     //Funciones globales
@@ -372,6 +372,8 @@ class condigoInt{
             if (resultType != null){
                 let dir = mapaTemp.getPointer(resultType);
                 let res = 't' + this.counterT
+                //console.log(mapaTemp)
+                mapaTemp.inserDir(dir, resultType, res, '')
                 this.addOperando(dir, resultType)
                 this.counterT+= 1;
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
@@ -398,6 +400,7 @@ class condigoInt{
                 let res = 't' + this.counterT
                 let dir = mapaTemp.getPointer(resultType);
                 this.addOperando(dir, resultType)
+                mapaTemp.inserDir(dir, resultType, res, '')
                 this.counterT+= 1;
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
                 //if any operand were a temporal space return it to avail?
@@ -423,6 +426,8 @@ class condigoInt{
                 let dir = mapaTemp.getPointer(resultType);
                 this.addOperando(dir, resultType)
                 this.counterT+= 1;
+                mapaTemp.inserDir(dir, resultType, res, '')
+
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
                 //if any operand were a temporal space return it to avail?
             }else{
@@ -431,53 +436,6 @@ class condigoInt{
         }
     }
 
-    validarAnd = (mapaTemp) => {
-        if (this.pOperPeek() == '&'){
-            let opRVal = this.pilaO.pop()
-            let opLVal = this.pilaO.pop()
-            let oper = this.pOper.pop()
-            let opRType = this.pTipos.pop()
-            let opLType = this.pTipos.pop()
-            // console.log(opLVal, opLType, opRVal, opRType, oper);
-            let resultType = this.validateType(opLType, opRType, oper)
-
-            if (resultType != null){
-                let res = 't' + this.counterT
-                let dir = mapaTemp.getPointer(resultType);
-
-                this.addOperando(dir, resultType)
-                this.counterT+= 1;
-                this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
-                //if any operand were a temporal space return it to avail?
-            }else{
-                throw new Error("Error, type mismatch");
-            }
-        }
-    }
-
-    validarOr = (mapaTemp) => {
-        if (this.pOperPeek() == '|' ){
-            let opRVal = this.pilaO.pop()
-            let opLVal = this.pilaO.pop()
-            let oper = this.pOper.pop()
-            let opRType = this.pTipos.pop()
-            let opLType = this.pTipos.pop()
-            // console.log(opLVal, opLType, opRVal, opRType, oper);
-            let resultType = this.validateType(opLType, opRType, oper)
-
-            if (resultType != null){
-                let res = 't' + this.counterT
-                let dir = mapaTemp.getPointer(resultType);
-
-                this.addOperando(dir, resultType)
-                this.counterT+= 1;
-                this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
-                //if any operand were a temporal space return it to avail?
-            }else{
-                throw new Error("Error, type mismatch");
-            }
-        }
-    }
     //Estatutos Lineales 
 
     writeStmt = () =>{
@@ -593,12 +551,14 @@ class condigoInt{
         this.pilaO.pop()
         this.pTipos.pop()
         this.agregarCuadr(['ENDFUNC','','',''])
-        this.counterT = 0;
     }
 
     generateParam = (mapaTemp) =>{
         let tipo = this.pTipos.pop()
         let dir = mapaTemp.getPointer(tipo)
+        let res = 't' + this.counterT
+        this.counterT += 1;
+        mapaTemp.inserDir(dir, tipo, res, '')
         this.agregarCuadr(['PARAMETRO', this.pilaO.pop(), '', dir])
     }
 

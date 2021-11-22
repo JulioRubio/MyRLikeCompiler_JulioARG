@@ -8,7 +8,7 @@ class mapaMemoria{
             this.num = 4;
         }
 
-        console.log(tipo, this.num)
+       //console.log(tipo, this.num)
 
         //example
         //[1000 ........ 9999]

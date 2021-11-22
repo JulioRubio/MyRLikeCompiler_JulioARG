@@ -48,6 +48,10 @@ class manejadorMemoria{
     getMapaLocal = (tipo) => {
         return this.mapaLocal.getMemoria(tipo);
     }
+
+    getMapaConst = (tipo) =>{
+        return this.mapaCTE.getMemoria(tipo)
+    }
 }
 
 module.exports = manejadorMemoria;

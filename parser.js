@@ -4,5 +4,7 @@ var parser = require('./lexer');
 
 fs.readFile('./input.txt', (err, data) => {
     if (err) throw err;
-    parser.parse(data.toString());
+    let compiler = parser.parse(data.toString());
+    console.log(compiler)
+
 });
