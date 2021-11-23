@@ -15,12 +15,49 @@ function void hi(){
     write("hi");
 }
 
-function int fibo(int: n){
-    if(n <= 1){
-    }else{
-        return(fibo(n-1) + fibo(n-2));
+function int fiboIter(int: n){
+    vars
+        int: prev;
+        int: prevPrev;
+        int: curr;
+        int: i;
+
+    i = 1;
+    prev = 0;
+    curr = 1;
+
+    while(i < n){
+        prevPrev = prev;
+        prev = curr;
+        curr = prev + prevPrev;
+        i = i + 1;
     }
+    return (curr);
 }
+
+function int fiboRec(int: n){
+
+    if(n <= 1){
+        return(1);
+    }
+    return (fiboRec(n-1) + fiboRec(n-2));
+}
+
+function int factIter(int: n){
+    vars
+        int: fact;
+        int: i;
+
+    fact = 1;
+    i = fact;
+
+    while(i <= n){
+        fact = fact * i;
+        i = i + 1;
+    }
+    return (fact);
+}
+
 
 function void main (){
     vars 
@@ -31,12 +68,24 @@ function void main (){
     a = 5;
     b = 2;
     i = 20;
+
+    write("Da valor de a ");
+    read(a);
+    
     res = a * b / (8 + 5 * b - (8 - a));
-    write("res", res);
+    write("aritmetic res ", res);
 
 
     res = sum(a,b);
-    write("call res", res);
+    write("call res ", res);
 
-    res = fibo(a);
+    res = fiboIter(30);
+
+    write("fiboIter ",res);
+
+
+
+    res = factIter(5);
+
+    write("fact ",res);
 }

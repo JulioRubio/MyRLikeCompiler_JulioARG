@@ -131,12 +131,22 @@ class mapaMemoria{
         switch (tipo){
             case 'int':{
                 this.memoriaInt[dir] = [tipo, memory[1], val];
+                break;
             }
             case 'float':{
                 this.memoriaFloat[dir] = [tipo, memory[1], val];
+                break;
+
             }
             case 'char':{
                 this.memoriaChar[dir] = [tipo, memory[1], val];
+                break;
+
+            }
+            default: {
+                this.memoriaExt[dir] = [tipo, memory[1], val];
+                break;
+
             }
         }
     }

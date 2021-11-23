@@ -4,7 +4,8 @@
   "description": "Compilador basado en lenguaje MyRLike utilizando js",
   "main": "parser.js",
   "dependencies": {
-    "jison": "^0.4.18"
+    "jison": "^0.4.18",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {},
   "scripts": {

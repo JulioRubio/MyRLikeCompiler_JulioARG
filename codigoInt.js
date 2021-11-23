@@ -461,8 +461,8 @@ class condigoInt{
                 let dir = mapaTemp.getPointer(resultType);
                 this.addOperando(dir, resultType)
                 this.counterT+= 1;
+                //console.log(dir, resultType, res, '')
                 mapaTemp.inserDir(dir, resultType, res, '')
-
                 this.generarCuadrAritmetic(oper, opLVal, opRVal, dir)
                 //if any operand were a temporal space return it to avail?
             }else{

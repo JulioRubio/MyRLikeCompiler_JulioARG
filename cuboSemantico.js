@@ -28,7 +28,7 @@ let cuboSemantico = {
             '<': null,
             '>': null,
             '==': null,
-            '!=':null,
+            '!=': null,
         },
         string:{
             '+': null,

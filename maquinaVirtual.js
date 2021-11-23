@@ -1,3 +1,7 @@
+"use strict";
+const ps = require("prompt-sync")
+const prompt = ps();
+
 class maquinaVirtual{
     constructor(codigo){
         this.funcTable = codigo.funcTable;
@@ -11,6 +15,8 @@ class maquinaVirtual{
         this.paramsCounter = 0;
         this.currentEra;
         this.returnValues = []
+
+        this.sameLineOutput = ""
     }
 
     performCuadOperation = () =>{
@@ -102,36 +108,163 @@ class maquinaVirtual{
 
                 break;
             case '>':
-
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+                this.saveMemoryVal(resType, res, opLVal > opRVal);
+                this.currIndex+=1
+                break;
             case '<':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal < opRVal);
+            
+                this.currIndex+=1
+                break;
             case '>=':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal >= opRVal);
+            
+                this.currIndex+=1
+                break;
             case '<=':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal <= opRVal);
+            
+                this.currIndex+=1
+                break;
             case '!=':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal != opRVal);
+            
+                this.currIndex+=1
+                break;
             case '==':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+
+                this.saveMemoryVal(resType, res, opLVal == opRVal);
+            
+                this.currIndex+=1
+                break;
             case '&':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal && opRVal);
+            
+                this.currIndex+=1
+                break;
             case '|':
+                opL = cuad[1];
+                opR = cuad[2];
+                res = cuad[3];
+                opLType = this.getMemoryType(opL);
+                opLVal = Number(this.getMemoryVal(opLType, opL))
+                opRType = this.getMemoryType(opR);
+                opRVal = Number(this.getMemoryVal(opRType, opR))
+                resType = this.getMemoryType(res);
+
+                this.saveMemoryVal(resType, res, opLVal || opRVal);
+            
+                this.currIndex+=1
                 break;
             case 'GOTO':
                 this.currIndex = this.cuads[this.currIndex][3];
                 //console.log(this.currIndex);
                 break;
             case 'GOTOF':
-                let validationDir = this.cuads[this.currIndex][1];
-                let result = this.cuads[this.currIndex][3];
-                this.currIndex = this.cuads[this.currIndex][3];
+                res = this.cuads[this.currIndex][1];
+
+                resType = this.getMemoryType(res);
+                resVal = this.getMemoryVal(resType, res);
+                if(resVal){
+                    this.currIndex+=1;
+                }else{
+                    this.currIndex = this.cuads[this.currIndex][3];
+                }
+
                 break;
             case 'WRITE':
                 cuad = this.cuads[this.currIndex];
                 res = cuad[3];
                 resType = this.getMemoryType(res);
                 resVal = this.getMemoryVal(resType, res);
-                console.log(resVal);
                 this.currIndex+=1
+
+
+                resVal = resVal.toString().split('"').join('')
+
+                this.sameLineOutput += resVal;
+
+
+
+                if(cuad = this.cuads[this.currIndex][0] != 'WRITE'){
+                    console.log(this.sameLineOutput);
+                    this.sameLineOutput = "";
+
+                }
                 break;
             case 'READ':
-                this.currIndex+=1
-                break;
-            case 'PRINT':
+                resVal = prompt();
+
+                res = cuad[3];
+                resType = this.getMemoryType(res);
+
+                //console.log(res, resVal, resType);
+
+                this.saveMemoryVal(resType,res,resVal);
+
+
                 this.currIndex+=1
                 break;
             case 'PARAMETRO':
@@ -226,11 +359,12 @@ class maquinaVirtual{
 
     resolverCuads = () => {
         var count = Object.keys(this.cuads).length;
-        //console.log(this.cuads);
+        console.log(this.cuads);
         while(this.currIndex < count){
             this.performCuadOperation()
         }
-        console.log("ENDED")
+        console.log("");
+        console.log("Program execution ended")
     }
 }
 

@@ -97,24 +97,6 @@ PROGRAMA
 			globalVarTable: globalVarTable.varsTable,
 			manejadorMemoria: mm
 		}
-		// console.log("=============================== ")
-		// console.log ("")
-		// console.log("CUADRUPLOS ")
-		// console.log(codigo.cuadruplos.cuads)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Funciones ")
-		// console.log ("")
-		// console.log(funcTable.funcTable)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Variables ")
-		// console.log ("")
-		// for(const table in funcTable.funcTable){
-		// 	let tableItem = funcTable.getFunc(table);
-		// 	console.log(table, tableItem.varTable.varsTable)
-		// }
-
 		return {
 			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
@@ -128,31 +110,6 @@ PROGRAMA
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
 		codigo.endProc();
-
-		// codigo.endProc();
-		// console.log("=============================== ")
-		// console.log ("")
-		// console.log("CUADRUPLOS ")
-		// console.log(codigo.cuadruplos.cuads)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Funciones ")
-		// console.log ("")
-		// console.log(funcTable.funcTable)
-		// console.log ("")
-		// console.log("=============================== ")
-		// console.log("Variables ")
-		// console.log ("")
-		// for(const table in funcTable.funcTable){
-		// 	let tableItem = funcTable.getFunc(table);
-		// 	console.log(table, tableItem.varTable.varsTable)
-		// }
-		// console.log("+++++++++++++")
-		// console.log(mm)
-		// console.log(codigo.pOper)
-		// console.log(codigo.pilaO)
-		// console.log(codigo.pTipos)
-
 		return {
 			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
