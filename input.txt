@@ -15,6 +15,13 @@ function void hi(){
     write("hi");
 }
 
+function int fibo(int: n){
+    if(n <= 1){
+    }else{
+        return(fibo(n-1) + fibo(n-2));
+    }
+}
+
 function void main (){
     vars 
         int: a;
@@ -30,5 +37,6 @@ function void main (){
 
     res = sum(a,b);
     write("call res", res);
-    hi();
+
+    res = fibo(a);
 }
