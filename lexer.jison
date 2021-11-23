@@ -204,36 +204,64 @@ FUNC_OPT_VARS
 ;
 
 PROG_VARS
-	: PROG_VARS TYPE ':' id ';'{
-		pointerGlobal = mm.getCurrentGlobalPointer($2);
-		mm.inserGlobal(pointerGlobal, $2, $4, '');
-		globalVarTable.insertVar($4, {tipo: $2, dir: pointerGlobal})
+	: PROG_VARS TYPE ':' id insertGlobalVar LISTAS_IDS_PROG ';'{
+
 	}
-	| TYPE ':' id ';'{
-		pointerGlobal = mm.getCurrentGlobalPointer($1);
-		mm.inserGlobal(pointerGlobal, $1, $3, '');
-		globalVarTable.insertVar($3, {tipo: $1, dir: pointerGlobal})
+	| TYPE ':' id insertGlobalVar LISTAS_IDS_PROG ';'{
 	}
 ;
 
+insertGlobalVar
+	:{
+		tipoVar = $-1
+		pointerGlobal = mm.getCurrentGlobalPointer($-1);
+		mm.inserGlobal(pointerGlobal, $-1, $1, '');
+		globalVarTable.insertVar($1, {tipo: $-1, dir: pointerGlobal})
+	}
+;
+
+insertGlobalMultVar
+	:{
+		pointerGlobal = mm.getCurrentGlobalPointer(tipoVar);
+		mm.inserGlobal(pointerGlobal, tipoVar, $1, '');
+		globalVarTable.insertVar($1, {tipo: tipoVar, dir: pointerGlobal})
+	}
+;
 
 FUNC_VARS 
-	: FUNC_VARS TYPE ':' id ';'{
-		pointerLocal = mm.getCurrentLocalPointer($2);
-		mm.inserLocal(pointerLocal, $2, $4, '')
-		varT.insertVar($4, {tipo: $2, dir: pointerLocal})
-		funcVarCounter += 1;
+	: FUNC_VARS TYPE ':' id insertLocalVar LISTAS_IDS_FUNC  ';'{
+
 	}
-	| TYPE ':' id ';'{
-		pointerLocal = mm.getCurrentLocalPointer($1);
-		mm.inserLocal(pointerLocal, $1, $3, '')
-		varT.insertVar($3, {tipo: $1, dir: pointerLocal})
+	| TYPE ':' id insertLocalVar LISTAS_IDS_FUNC ';'{
+
+	}
+;
+
+insertLocalVar
+	:{
+		tipoVar = $-1
+		pointerLocal = mm.getCurrentLocalPointer(tipoVar);
+		mm.inserLocal(pointerLocal, tipoVar, $1, '')
+		varT.insertVar($1, {tipo: tipoVar, dir: pointerLocal})
 		funcVarCounter += 1;
 	}
 ;
 
-LISTAS_IDS 
-	: ',' id LISTAS_IDS
+insertLocalMultVar
+	:{
+		pointerLocal = mm.getCurrentLocalPointer(tipoVar);
+		mm.inserLocal(pointerLocal, tipoVar, $1, '');
+		varT.insertVar($1, {tipo: tipoVar, dir: pointerLocal})
+	}
+;
+
+LISTAS_IDS_PROG 
+	: ',' id insertGlobalMultVar LISTAS_IDS_PROG
+	|
+;
+
+LISTAS_IDS_FUNC
+	: ',' id insertLocalMultVar LISTAS_IDS_FUNC
 	|
 ;
 
@@ -614,6 +642,7 @@ let pointerGlobal;
 let pointerLocal;
 let pointerConst;
 let tipoParam;
+let tipoVar;
 let funcVarCounter = 0;
 let funcParamCounter = 0;
 let cuadCounter = 0;
