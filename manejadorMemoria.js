@@ -20,7 +20,7 @@ class manejadorMemoria{
         return this.mapaCTE.getPointer(tipo);
     }
 
-    inserGlobal = (dir,tipo, name, val) => {
+    inserGlobal = (dir ,tipo, name, val) => {
         this.mapaGlobal.inserDir(dir, tipo, name, val)
     }
 

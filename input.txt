@@ -1,70 +1,43 @@
 program MyRLike;
-vars
+vars 
     int: i;
-    int: j;
-    int: p;
-    float: valor;
 
-function int fact(int: h){
+function int sum(int: a, int:b){
     vars 
-        int: i;
-        int: failure;
-        int: success;
-    j = valor / 15;
-    i = j / 2;
-    if(j > 5 & i != 1 | j == 0){
-        success = p * 2;
-        write("success", success);
-        return(success);
+        int: res;
 
-    }else{
-        failure = p / 2.5;
-        write("failure ",failure);
-        return(failure);
-    }
+    res = a + b;
+
+    return(res);
 }
 
-function float fact2(int: h, int:g, float: counter){
-    vars 
-        int: i;
-        int: failure;
-        int: success;
-    j = valor / 15;
-    i = j / 2;
-    if(j > 5 & i != 1){
-        success = p * 2;
-        write("success", success);
-        return(success);
-
-    }else{
-        failure = p / 2.5;
-        write("failure ",failure );
-        return(failure);
-    }
-}
-
-function void useless(){
-    write("hi i am pretty useless huh");
+function void hi(){
+    write("hi");
 }
 
 function void main (){
     vars 
-        float: temp;
-        int: y;
-        int:fact;
-    read(y);
-    read(valor);
-    write("valor", valor, j + 1);
-    temp = valor / 10.5;
-    while (j < 100){
-        if(j > 0){
-            j = fact(y);
-        }
-        else{
-            i = i + i;
-        }
+        int: a;
+        int: b;
+        int: res;
+
+    a = 5;
+    b = 2;
+    i = 20;
+    res = a * b / (8 + 5 * b - (8 - a));
+    write("res", res);
+
+
+    res = sum(a,b);
+
+    write("res", res);
+
+    a = 1;
+
+    if(a > 0){
+    write("mas de cero");
+    }else{
+    write("cero o menos");
     }
 
-    j = fact2(1,2,10*5) + j;
-    useless();
 }

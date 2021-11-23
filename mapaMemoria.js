@@ -28,6 +28,8 @@ class mapaMemoria{
         this.intFin = dirInicio + this.sizeFragmento - 1;
 
         // console.log("------------------------------------------");
+        // console.log(tipo);
+        // console.log("------------------------------------------");
         // console.log("DIR INT");
 
         // console.log("DIR INICIO", this.intDirInicio);
@@ -100,9 +102,6 @@ class mapaMemoria{
 
     }
 
-
-
-
     inserDir = (dir, tipo, name, val) =>{
         switch (tipo){
             case 'int':{
@@ -124,6 +123,8 @@ class mapaMemoria{
     }
 
     updateVal = (tipo, dir, val) => {
+
+        //console.log(tipo, dir, val) 
         // console.log(tipo, dir);
         let memory = this.getVal(tipo, dir);
         // console.log(memory)
@@ -132,27 +133,46 @@ class mapaMemoria{
                 this.memoriaInt[dir] = [tipo, memory[1], val];
             }
             case 'float':{
+                this.memoriaFloat[dir] = [tipo, memory[1], val];
             }
             case 'char':{
+                this.memoriaChar[dir] = [tipo, memory[1], val];
             }
         }
     }
     getVal = (tipo, dir) =>{
         switch (tipo){
             case 'int':{
-                return this.memoriaInt[dir];
+                return this.memoriaInt[dir][2];
             }
             case 'float':{
-                return this.memoriaFloat[dir];
+                return this.memoriaFloat[dir][2];
             }
             case 'char':{
-                return this.memoriaChar[dir];
+                return this.memoriaChar[dir][2];
             }
             default:{
-                return this.memoriaExt[dir];
+                return this.memoriaExt[dir][2];
             }
         }
     }
+
+    getType = (dir, scope) =>{
+        switch(true){
+            case (dir < this.intFin): 
+                return 'int';
+            case (dir < this.floatFin): 
+                return 'float';
+            case (dir < this.charFin): 
+                return 'char';
+            default:
+                if(scope == 'TEMP'){
+                    return 'bool';
+                }
+                return 'string';
+        }
+    }
+    
     getPointer = (tipo) =>{
         let pointer;
         switch (tipo){

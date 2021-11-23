@@ -114,9 +114,21 @@ PROGRAMA
 		// 	let tableItem = funcTable.getFunc(table);
 		// 	console.log(table, tableItem.varTable.varsTable)
 		// }
+
+		return {
+			cuads: codigo.cuadruplos.getCuads(),
+			funcTable: funcTable.funcTable,
+			globalVarTable: globalVarTable.varsTable,
+			constantes: mm.mapaCTE,
+			local: mm.mapaLocal,
+			global: mm.mapaGlobal,
+			temp: mm.mapaTemp
+		}
 	}
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
+		codigo.endProc();
+
 		// codigo.endProc();
 		// console.log("=============================== ")
 		// console.log ("")
@@ -142,7 +154,7 @@ PROGRAMA
 		// console.log(codigo.pTipos)
 
 		return {
-			cuadruplos: codigo.cuadruplos.getCuads(),
+			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
 			globalVarTable: globalVarTable.varsTable,
 			constantes: mm.mapaCTE,
@@ -309,6 +321,7 @@ ESTATUTOS
 ESTATUTO	
 	: ASIGNACION
 	| LLAMADA ';'
+	// | LLAMADA_VOID ';'
 	| RETURN
 	| READ
 	| WRITE
@@ -326,13 +339,13 @@ ASIGNACION
 		let readMemoria;
 		if(readLocal != undefined){
 			// console.log("metiendo a memoria local")
-			mm.updateLocal(readLocal.tipo, readLocal.dir, $3)
-			readMemoria = mm.getMapaLocal(readLocal.tipo)
+			// mm.updateLocal(readLocal.tipo, readLocal.dir, $3)
+			// readMemoria = mm.getMapaLocal(readLocal.tipo)
 			// console.log(readMemoria)
 			codigo.addOperando(readLocal.dir, readLocal.tipo)
 		}else if(readGlobal != undefined){
-			mm.updateGlobal(readGlobal.tipo, readGlobal.dir, $3)
-			readMemoria = mm.getMapaGlobal(readGlobal.tipo)
+			// mm.updateGlobal(readGlobal.tipo, readGlobal.dir, $3)
+			// readMemoria = mm.getMapaGlobal(readGlobal.tipo)
 			// console.log(readMemoria)
 			codigo.addOperando(readGlobal.dir, readGlobal.tipo)
 		}
@@ -348,13 +361,18 @@ LLAMADA
 	}
 ;
 
+// LLAMADA_VOID
+// 	: id genERA '(' CALL_PARAMS ')'{
+// 		codigo.goSub(funcCalled.name, funcCalled.type);
+// 	}
+// ;
+
 genERA
 	:{
 		funcCalled = funcTable.getFunc($1)
 		codigo.genEra($1)
 		funcParamCounter = funcCalled.paramCounter;
 		callParamCounter = 1;
-
 		//console.log("funcion", funcCalled.name, "con par", funcParamCounter)
 	}
 ;

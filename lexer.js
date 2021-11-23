@@ -110,11 +110,23 @@ case 1:
 		// 	let tableItem = funcTable.getFunc(table);
 		// 	console.log(table, tableItem.varTable.varsTable)
 		// }
+
+		return {
+			cuads: codigo.cuadruplos.getCuads(),
+			funcTable: funcTable.funcTable,
+			globalVarTable: globalVarTable.varsTable,
+			constantes: mm.mapaCTE,
+			local: mm.mapaLocal,
+			global: mm.mapaGlobal,
+			temp: mm.mapaTemp
+		}
 	
 break;
 case 2:
 
 		funcTable.insertFunc({type: "program", name:$$[$0-6], varTable: globalVarTable})
+		codigo.endProc();
+
 		// codigo.endProc();
 		// console.log("=============================== ")
 		// console.log ("")
@@ -140,7 +152,7 @@ case 2:
 		// console.log(codigo.pTipos)
 
 		return {
-			cuadruplos: codigo.cuadruplos.getCuads(),
+			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
 			globalVarTable: globalVarTable.varsTable,
 			constantes: mm.mapaCTE,
@@ -234,13 +246,13 @@ case 44:
 		let readMemoria;
 		if(readLocal != undefined){
 			// console.log("metiendo a memoria local")
-			mm.updateLocal(readLocal.tipo, readLocal.dir, $$[$0-1])
-			readMemoria = mm.getMapaLocal(readLocal.tipo)
+			// mm.updateLocal(readLocal.tipo, readLocal.dir, $$[$0-1])
+			// readMemoria = mm.getMapaLocal(readLocal.tipo)
 			// console.log(readMemoria)
 			codigo.addOperando(readLocal.dir, readLocal.tipo)
 		}else if(readGlobal != undefined){
-			mm.updateGlobal(readGlobal.tipo, readGlobal.dir, $$[$0-1])
-			readMemoria = mm.getMapaGlobal(readGlobal.tipo)
+			// mm.updateGlobal(readGlobal.tipo, readGlobal.dir, $$[$0-1])
+			// readMemoria = mm.getMapaGlobal(readGlobal.tipo)
 			// console.log(readMemoria)
 			codigo.addOperando(readGlobal.dir, readGlobal.tipo)
 		}
@@ -259,7 +271,6 @@ case 47:
 		codigo.genEra($$[$0])
 		funcParamCounter = funcCalled.paramCounter;
 		callParamCounter = 1;
-
 		//console.log("funcion", funcCalled.name, "con par", funcParamCounter)
 	
 break;
