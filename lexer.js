@@ -262,7 +262,7 @@ case 44:
 break;
 case 46:
 
-		codigo.goSub(funcCalled.name, funcCalled.type);
+		codigo.goSub(funcCalled.name, funcCalled.type, mm.mapaTemp);
 	
 break;
 case 47:

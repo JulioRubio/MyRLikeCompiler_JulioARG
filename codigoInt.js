@@ -13,6 +13,7 @@ let cuboSemantico = {
             '/': 'int',
             '<': 'bool',
             '>': 'bool',
+            '=': 'int',
             '<=': 'bool',
             '>=': 'bool',
             '==': 'bool',
@@ -25,6 +26,7 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '=': 'int',
             '<=': 'bool',
             '>=': 'bool',
             '==': 'bool',
@@ -37,6 +39,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -49,6 +52,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -61,6 +65,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -75,6 +80,7 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '=': 'float',
             '<=': 'bool',
             '>=': 'bool',
             '==': 'bool',
@@ -87,6 +93,7 @@ let cuboSemantico = {
             '/': 'float',
             '<': 'bool',
             '>': 'bool',
+            '=': 'float',
             '<=': 'bool',
             '>=': 'bool',
             '==': 'bool',
@@ -99,6 +106,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -111,6 +119,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -123,6 +132,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -137,6 +147,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -149,6 +160,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -161,6 +173,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': 'bool',
@@ -173,6 +186,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': 'bool',
@@ -185,6 +199,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -199,6 +214,9 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -209,6 +227,9 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -219,6 +240,9 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         },
@@ -229,7 +253,10 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
-            '==': null,
+            '=': 'string',
+            '<=': null,
+            '>=': null,
+            '==': 'string',
             '!=':null,
         },
         bool:{
@@ -239,6 +266,9 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
+            '<=': null,
+            '>=': null,
             '==': null,
             '!=':null,
         }  
@@ -251,6 +281,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -263,6 +294,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -275,6 +307,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -287,6 +320,7 @@ let cuboSemantico = {
             '/': null,
             '<': null,
             '>': null,
+            '=': null,
             '<=': null,
             '>=': null,
             '==': null,
@@ -356,6 +390,7 @@ class condigoInt{
         // console.log(this.pOper)
 		// console.log(this.pilaO)
 		// console.log(this.pTipos)
+        //console.log(opLType, opRType, oper);
         return cuboSemantico[opLType][opRType][oper]
     }
 
@@ -458,11 +493,12 @@ class condigoInt{
         let lType = this.pTipos.pop()
         let res = this.pilaO.pop();
         let rType = this.pTipos.pop()
+        let pOper = this.pOper.pop();
 
         //console.log(lType,rType,'*');
-        let validate = this.validateType(lType,rType,'*');
+        let validate = this.validateType(lType,rType,pOper);
         if(validate != null){
-            this.agregarCuadr([this.pOper.pop(), res, '', assigner])
+            this.agregarCuadr([pOper, res, '', assigner])
         }
         else{
             throw new Error(`Error on assignment`)
@@ -541,12 +577,19 @@ class condigoInt{
         this.agregarCuadr(['ERA', '', '', calledFunc])
     }
 
-    goSub = (calledFunc, funcType) =>{
-        this.pilaO.push(calledFunc)
-        this.pTipos.push(funcType)
-        this.agregarCuadr(['GOSUB', '', '', calledFunc])        
-    }
+    goSub = (calledFunc, funcType, mapaTemp) =>{
+        this.pTipos.push(funcType);
+        this.agregarCuadr(['GOSUB', '', '', calledFunc])  
 
+        if (funcType == 'void'){
+
+        }else{
+            let dir = mapaTemp.getPointer(funcType);
+            mapaTemp.inserDir(dir, funcType, calledFunc, '')
+            this.pilaO.push(dir);
+        }
+
+    }
     endFunc = () =>{
         this.pilaO.pop()
         this.pTipos.pop()

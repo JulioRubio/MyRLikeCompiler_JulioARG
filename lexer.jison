@@ -321,7 +321,6 @@ ESTATUTOS
 ESTATUTO	
 	: ASIGNACION
 	| LLAMADA ';'
-	// | LLAMADA_VOID ';'
 	| RETURN
 	| READ
 	| WRITE
@@ -357,15 +356,9 @@ ASIGNACION
 
 LLAMADA
 	: id genERA '(' CALL_PARAMS ')'{
-		codigo.goSub(funcCalled.name, funcCalled.type);
+		codigo.goSub(funcCalled.name, funcCalled.type, mm.mapaTemp);
 	}
 ;
-
-// LLAMADA_VOID
-// 	: id genERA '(' CALL_PARAMS ')'{
-// 		codigo.goSub(funcCalled.name, funcCalled.type);
-// 	}
-// ;
 
 genERA
 	:{

@@ -8,7 +8,8 @@ class maquinaVirtual{
         this.temp = codigo.temp;
         this.currIndex = 0;
         this.insPointer = [];
-        this.params = {}
+        this.paramsCounter = 0;
+        this.currentEra;
         this.returnValues = []
     }
 
@@ -16,8 +17,8 @@ class maquinaVirtual{
         //console.log(this.currIndex);
         let cuad = this.cuads[this.currIndex];
         let cuadFunc = this.cuads[this.currIndex][0];
-        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType;
-        console.log(cuad);
+        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType, funcParams;
+        //console.log(cuad);
 
         switch (cuadFunc){
             case '+':
@@ -38,7 +39,7 @@ class maquinaVirtual{
 
 
                 this.currIndex+=1
-                console.log("SUM",opLVal + opRVal);
+                //console.log("SUM",opLVal + opRVal);
                 break;
             case '-':
                 opL = cuad[1];
@@ -71,7 +72,7 @@ class maquinaVirtual{
 
                 this.saveMemoryVal(resType, res, opLVal * opRVal);
                 this.currIndex+=1
-                console.log("SUM ", opLVal * opRVal);
+               // console.log("SUM ", opLVal * opRVal);
                 break;
             case '/':
                 opL = cuad[1];
@@ -134,12 +135,24 @@ class maquinaVirtual{
                 this.currIndex+=1
                 break;
             case 'PARAMETRO':
+                funcParams = this.funcTable[this.currentEra].varTable.varsTable
+                res = funcParams[Object.keys(funcParams)[this.paramsCounter]].dir;
+
+                opL = cuad[1]
+                opLType = this.getMemoryType(opL);
+                opLVal = this.getMemoryVal(opLType, opL);
+
+                this.saveMemoryVal(opLType, res, opLVal);
+
+                this.paramsCounter += 1;
                 this.currIndex+=1
                 break;
             case 'ERA':
+                this.currentEra = cuad[3];
                 this.currIndex+=1
                 break;
             case 'GOSUB':
+                this.paramsCounter = 0;
                 opR = cuad[3];
                 let funcInitialCuad = this.funcTable[opR].firstCuad
                 this.insPointer.push(this.currIndex+1)
@@ -150,14 +163,14 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
                 if(resType == 'int' || resType == 'float'){
                     resVal = Number(this.getMemoryVal(resType, res))
-                    console.log(resVal);
                 }else{
                     resVal = this.getMemoryVal(resType, res)
-                    console.log(resVal);
                 }
                 this.currIndex = this.insPointer.pop()
                 //this.returnValues.push(resVal);
-                //this.cuads[this.currIndex][1] = resVal;
+                opL =  this.cuads[this.currIndex][1];
+                opLType = this.getMemoryType(opL);
+                this.saveMemoryVal(opLType, opL, resVal);
                 break;
             case 'ENDFUNC':
                 this.currIndex = this.insPointer.pop()
@@ -213,10 +226,11 @@ class maquinaVirtual{
 
     resolverCuads = () => {
         var count = Object.keys(this.cuads).length;
-        console.log(this.cuads);
+        //console.log(this.cuads);
         while(this.currIndex < count){
             this.performCuadOperation()
         }
+        console.log("ENDED")
     }
 }
 

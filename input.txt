@@ -29,15 +29,6 @@ function void main (){
 
 
     res = sum(a,b);
-
-    write("res", res);
-
-    a = 1;
-
-    if(a > 0){
-    write("mas de cero");
-    }else{
-    write("cero o menos");
-    }
-
+    write("call res", res);
+    hi();
 }
