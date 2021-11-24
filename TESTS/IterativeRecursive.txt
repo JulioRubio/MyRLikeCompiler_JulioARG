@@ -1,0 +1,75 @@
+program MyRLike;
+vars 
+    int: i;
+
+function int fiboIter(int: n){
+    vars
+        int: prev;
+        int: prevPrev;
+        int: curr;
+
+    i = 1;
+    prev = 0;
+    curr = 1;
+
+    while(i < n){
+        prevPrev = prev;
+        prev = curr;
+        curr = prev + prevPrev;
+        i = i + 1;
+    }
+    return (curr);
+}
+
+function int fiboRec(int: recRes, int: n){
+    if(n <= 1){
+        return(recRes);
+    }
+    recRes = fiboRec(recRes + 1, n-1);
+}
+
+function int factIter(int: n){
+    vars
+        int: fact;
+
+    fact = 1;
+    i = fact;
+
+    while(i <= n){
+        fact = fact * i;
+        i = i + 1;
+    }
+    return (fact);
+}
+
+function int factRec(int: factRes, int: n){
+    if (n >= 1){
+        factRec(factRes * n, n-1);
+    }
+    return (factRes + 0);
+}
+
+function void main (){
+    vars 
+        int: res, fact, fibo;
+
+    write("Da valor de factorial ");
+    read(fact);
+
+    write("Da valor de fibo ");
+    read(fibo);
+
+    res = fiboIter(fibo);
+
+    write("fiboIter ",res);
+
+    res = fiboRec(0, fibo);
+
+    write("fiboRec  ",res);
+
+    res = factIter(fact);
+    write("fact iter ", res);
+
+    res = factRec(1, fact);
+    write("fact rec ", res);
+}

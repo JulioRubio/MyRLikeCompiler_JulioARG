@@ -1,8 +1,5 @@
 
 let cuadruplo = require("./cuadruplos");
-let mapaMemoria = require("./mapaMemoria");
-let manejadorMemoria = require("./manejadorMemoria")
-
 
 let cuboSemantico = {
     int:{
@@ -478,6 +475,14 @@ class condigoInt{
         this.agregarCuadr(['WRITE', '', '',this.pilaO.pop()])
     }
 
+    arrWriteStmt = () =>{
+        this.pTipos.pop()
+        this.pTipos.pop()
+        let pos = this.pilaO.pop();
+        let arr = this.pilaO.pop();
+        this.agregarCuadr(['WRITE', '','', [pos,arr]])
+    }
+
     readStmt = () => {
         this.pTipos.pop()
         this.agregarCuadr(['READ', '', '', this.pilaO.pop()])
@@ -497,6 +502,7 @@ class condigoInt{
 
         //console.log(lType,rType,'*');
         let validate = this.validateType(lType,rType,pOper);
+        //console.log(lType,rType,pOper);
         if(validate != null){
             this.agregarCuadr([pOper, res, '', assigner])
         }
@@ -504,6 +510,40 @@ class condigoInt{
             throw new Error(`Error on assignment`)
         }
         //console.log(validate);
+    }
+
+    asignToArrStmt = (pointer) => {
+        let assigner = this.pilaO.pop();
+        let lType = this.pTipos.pop()
+        let res = this.pilaO.pop();
+        let rType = this.pTipos.pop()
+        let pOper = this.pOper.pop();
+
+        //console.log(lType,rType,'*');
+        let validate = this.validateType(lType,rType,pOper);
+        if(validate != null){
+            this.agregarCuadr([pOper, [pointer, assigner], '' ,res])
+        }
+        else{
+            throw new Error(`Error on assignment`)
+        }
+    }
+
+    asignArrStmt = (pointer) => {
+        let assigner = this.pilaO.pop();
+        let lType = this.pTipos.pop()
+        let res = this.pilaO.pop();
+        let rType = this.pTipos.pop()
+        let pOper = this.pOper.pop();
+
+        //console.log(lType,rType,'*');
+        let validate = this.validateType(lType,rType,pOper);
+        if(validate != null){
+            this.agregarCuadr([pOper, res, '' , [pointer, assigner]])
+        }
+        else{
+            throw new Error(`Error on assignment`)
+        }
     }
 
     returnStmt = () => {

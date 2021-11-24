@@ -23,7 +23,7 @@ class maquinaVirtual{
         //console.log(this.currIndex);
         let cuad = this.cuads[this.currIndex];
         let cuadFunc = this.cuads[this.currIndex][0];
-        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType, funcParams;
+        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType, funcParams, arrPos,arrType, arrVal;
         //console.log(cuad);
 
         switch (cuadFunc){
@@ -37,7 +37,7 @@ class maquinaVirtual{
 
                 opRType = this.getMemoryType(opR);
                 opRVal = Number(this.getMemoryVal(opRType, opR))
-                
+
 
                 resType = this.getMemoryType(res);
 
@@ -63,7 +63,7 @@ class maquinaVirtual{
                 this.saveMemoryVal(resType, res, opLVal - opRVal);
                 this.currIndex+=1
                 break;
-            case '*': 
+            case '*':
                 opL = cuad[1];
                 opR = cuad[2];
                 res = cuad[3];
@@ -97,15 +97,36 @@ class maquinaVirtual{
                 opL = cuad[1]
                 opR = cuad[3]
 
-                opLType = this.getMemoryType(opL);
-                opLVal = this.getMemoryVal(opLType, opL);
+                //console.log(cuad);
 
-                opRType = this.getMemoryType(opR);
-                opRVal = this.getMemoryVal(opRType, opR);
+                if(Array.isArray(opR)){
+                    arrPos = cuad[3][0];
+                    opR = cuad[3][1]
+                    arrType = this.getMemoryType(arrPos);
+                    arrVal = this.getMemoryVal(arrType, arrPos);
+                    opLType = this.getMemoryType(opL);
+                    opLVal = this.getMemoryVal(opLType, opL);
+                    opRType = this.getMemoryType(opR[arrVal]);
+                    this.saveMemoryVal(opRType, opR[arrVal], opLVal);
+                }else if(Array.isArray(opL)){
+                    arrPos = cuad[1][0];
+                    opL = cuad[1][1]
+                    arrType = this.getMemoryType(arrPos);
+                    arrVal = this.getMemoryVal(arrType, arrPos);
+                    opRType = this.getMemoryType(opR);
+                    opRVal = this.getMemoryVal(opRType, opR);
+                    opLType = this.getMemoryType(opL[arrVal]);
+                    opLVal = this.getMemoryVal(opLType, opL[arrVal])
+                    this.saveMemoryVal(opRType, opR, opLVal);
+                }
+                else{
+                    opLType = this.getMemoryType(opL);
+                    opLVal = this.getMemoryVal(opLType, opL);
 
-                this.saveMemoryVal(opRType, opR, opLVal);
+                    opRType = this.getMemoryType(opR);
+                    this.saveMemoryVal(opRType, opR, opLVal);
+                }
                 this.currIndex+=1
-
                 break;
             case '>':
                 opL = cuad[1];
@@ -130,7 +151,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal < opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '>=':
@@ -144,7 +165,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal >= opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '<=':
@@ -158,7 +179,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal <= opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '!=':
@@ -172,7 +193,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal != opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '==':
@@ -185,9 +206,11 @@ class maquinaVirtual{
                 opRVal = Number(this.getMemoryVal(opRType, opR))
                 resType = this.getMemoryType(res);
 
+                //console.log(resType);
+
 
                 this.saveMemoryVal(resType, res, opLVal == opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '&':
@@ -201,7 +224,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal && opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case '|':
@@ -215,7 +238,7 @@ class maquinaVirtual{
                 resType = this.getMemoryType(res);
 
                 this.saveMemoryVal(resType, res, opLVal || opRVal);
-            
+
                 this.currIndex+=1
                 break;
             case 'GOTO':
@@ -235,23 +258,27 @@ class maquinaVirtual{
 
                 break;
             case 'WRITE':
-                cuad = this.cuads[this.currIndex];
                 res = cuad[3];
-                resType = this.getMemoryType(res);
-                resVal = this.getMemoryVal(resType, res);
+                if(Array.isArray(res)){
+                    res = cuad[3][1];
+                    arrPos = cuad[3][0];
+                    arrType = this.getMemoryType(arrPos);
+                    arrVal = this.getMemoryVal(arrType, arrPos);
+
+                    //console.log(arrPos, arrType, arrVal);
+
+                    resType = this.getMemoryType(res[arrVal]);
+                    resVal = this.getMemoryVal(resType, res[arrVal]);
+                }else{
+                    resType = this.getMemoryType(res);
+                    resVal = this.getMemoryVal(resType, res);
+                }
                 this.currIndex+=1
-
-
                 resVal = resVal.toString().split('"').join('')
-
                 this.sameLineOutput += resVal;
-
-
-
                 if(cuad = this.cuads[this.currIndex][0] != 'WRITE'){
                     console.log(this.sameLineOutput);
                     this.sameLineOutput = "";
-
                 }
                 break;
             case 'READ':
@@ -289,6 +316,7 @@ class maquinaVirtual{
                 opR = cuad[3];
                 let funcInitialCuad = this.funcTable[opR].firstCuad
                 this.insPointer.push(this.currIndex+1)
+                //console.log("gosub",this.currIndex+1);
                 this.currIndex = funcInitialCuad;
                 break;
             case 'RETURN':
@@ -319,13 +347,13 @@ class maquinaVirtual{
     getMemoryType = (dir) => {
         //console.log(dir);
         switch(true){
-            case dir < 8000: 
+            case dir < 8000:
                 return this.global.getType(dir, 'GLOBAL')
             case dir < 18000:
                 return this.local.getType(dir, 'LOCAL')
             case dir < 28000:
                 return this.temp.getType(dir, 'TEMP')
-            default: 
+            default:
                 return this.constantes.getType(dir,'CONST')
         }
     }
@@ -333,33 +361,33 @@ class maquinaVirtual{
     saveMemoryVal = (tipo, dir, val) => {
         //console.log(tipo, dir, val)
         switch(true){
-            case dir < 8000: 
+            case dir < 8000:
                 return this.global.updateVal(tipo, dir, val);
             case dir < 18000:
                 return this.local.updateVal(tipo, dir, val);
             case dir < 28000:
                 return this.temp.updateVal(tipo, dir, val);
-            default: 
+            default:
                 return this.constantes.updateVal(tipo, dir, val);
         }
     }
 
     getMemoryVal = (type, dir) => {
         switch(true){
-            case dir < 8000: 
+            case dir < 8000:
                 return this.global.getVal(type, dir);
             case dir < 18000:
                 return this.local.getVal(type, dir);
             case dir < 28000:
                 return this.temp.getVal(type, dir);
-            default: 
+            default:
                 return this.constantes.getVal(type, dir);
         }
     }
 
     resolverCuads = () => {
         var count = Object.keys(this.cuads).length;
-        console.log(this.cuads);
+        //console.log(this.cuads);
         while(this.currIndex < count){
             this.performCuadOperation()
         }
@@ -403,3 +431,38 @@ module.exports = maquinaVirtual;
 // '28': [ 'WRITE', '', '', 35503 ],
 // '29': [ 'ENDFUNC', '', '', '' ],
 // '30': [ 'END', '', '', '' ]
+
+
+// {
+//     '0': [ 'GOTO', 'main', '', 23 ],
+//     '1': [ '=', 28000, '', 1000 ],
+//     '2': [ '<', 1000, 28001, 25500 ],
+//     '3': [ 'GOTOF', 25500, '', 9 ],
+//     '4': [ 'READ', '', '', 8000 ],
+//     '5': [ '=', 8000, '', [ 1000, [Array] ] ],
+//     '6': [ '+', 1000, 28002, 18000 ],
+//     '7': [ '=', 18000, '', 1000 ],
+//     '8': [ 'GOTO', '', '', 2 ],
+//     '9': [ 'ENDFUNC', '', '', '' ],
+//     '10': [ '=', 28003, '', 1000 ],
+//     '11': [ '=', 28004, '', 1001 ],
+//     '12': [ '<', 1000, 28005, 25501 ],
+//     '13': [ 'GOTOF', 25501, '', 21 ],
+//     '14': [ '=', [ 1000, [Array] ], '', 8002 ],
+//     '15': [ '==', 8002, 8001, 25502 ],
+//     '16': [ 'GOTOF', 25502, '', 20 ],
+//     '17': [ 'WRITE', '', '', 35500 ],
+//     '18': [ 'WRITE', '', '', 1000 ],
+//     '19': [ 'RETURN', '', '', 1000 ],
+//     '20': [ 'GOTO', '', '', 12 ],
+//     '21': [ 'WRITE', '', '', 35501 ],
+//     '22': [ 'ENDFUNC', '', '', '' ],
+//     '23': [ 'ERA', '', '', 'addValues' ],
+//     '24': [ 'GOSUB', '', '', 'addValues' ],
+//     '25': [ 'ERA', '', '', 'find' ],
+//     '26': [ 'PARAMETRO', 28006, '', 18001 ],
+//     '27': [ 'GOSUB', '', '', 'find' ],
+//     '28': [ '=', 18002, '', 8004 ],
+//     '29': [ 'ENDFUNC', '', '', '' ],
+//     '30': [ 'END', '', '', '' ]
+//   }

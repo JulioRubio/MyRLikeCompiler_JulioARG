@@ -1,0 +1,37 @@
+
+program MyRLike;
+vars 
+    int: i,b;
+    int: h[5];
+
+
+function void hi(){
+    write("Hello World");
+}
+
+function int sum(int: a, int:b){
+    vars 
+        int: res;
+
+    res = a + b;
+
+    return(res);
+}
+
+
+function void main (){
+    vars 
+        int: a, res;
+
+    write("Da valor de a ");
+    read(a);
+
+    write("Da valor de b ");
+    read(b);
+
+    res = a * b / (8 + 5 * b - (8 - a));
+    write("aritmetic res ", res);
+    
+    res = sum(a,b);
+    write("call res ", res);
+}

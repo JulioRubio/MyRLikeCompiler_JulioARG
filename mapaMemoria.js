@@ -4,6 +4,8 @@ class mapaMemoria{
 
         this.num = 3;
 
+        this.pointerArr = [];
+
         if(tipo == 'TEMP' || tipo == 'CONST'){
             this.num = 4;
         }
@@ -205,6 +207,47 @@ class mapaMemoria{
                 pointer = this.extPointer;
                 this.extPointer += 1;
                 return pointer;
+            }
+        }
+    }
+
+    getPointers = (tipo, tam) =>{
+        let i = 0;
+        switch (tipo){
+            case 'int':{
+                while (i < tam){
+                    this.pointerArr[i] = this.intPointer;
+                    this.intPointer += 1;
+                    i+=1
+
+                }
+                return this.pointerArr;
+            }
+            case 'float':{
+                while (i < tam){
+                    this.pointerArr[i] = this.floatPointer;
+                    this.floatPointer += 1;
+                    i+=1
+                }
+                return this.pointerArr;
+            }
+            case 'char':{
+                while (i < tam){
+                    this.pointerArr[i] = this.charPointer;
+                    this.charPointer += 1;
+                    i+=1
+
+                }
+                return this.pointerArr;
+            }
+            default:{
+                while (i < tam){
+                    this.pointerArr[i] = this.extPointer;
+                    this.extPointer += 1;
+                    i+=1
+
+                }
+                return this.pointerArr;
             }
         }
     }

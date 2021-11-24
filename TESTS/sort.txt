@@ -1,0 +1,49 @@
+program MyRLike;
+vars 
+    int: i,j,y;
+    int: h[10];
+
+function void addValues(){
+    vars 
+        int: temp;
+    i = 0;
+    while(i < 10){
+        read(temp);
+        h[i] = temp;
+        i = i + 1;
+    }
+}
+
+function void sort(){   
+vars 
+    int: value, valueMinus, temp;
+    i = 0;
+    j = 0;
+    y = 0;
+    write("SORTED VALUES");
+    while (i < 10 - 1){
+        while(j < 10 - i - 1){
+            y = j + 1;
+            value = h[j];
+            valueMinus = h[y];
+            if(value > valueMinus){
+                temp = h[j];
+                h[j] = valueMinus;
+                h[y] = temp;
+            }
+            j = j + 1;
+        }
+        i = i + 1;
+        j = 0;
+    }
+    i = 0;
+    while (i < 10){
+        write(" ", h[i]);
+        i = i + 1;
+    }
+}
+
+function void main (){
+    addValues();
+    sort();
+}

@@ -11,6 +11,8 @@
 ")"                 return ')';
 "{"                 return '{';
 "}"                 return '}';
+"["                 return '[';
+"]"                 return ']';
 
 "+"                 return '+';
 "-"                 return '-';
@@ -91,12 +93,6 @@ PROGRAMA
 	: program id ';' PROG_OPT_VARS gotoMain MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
 		codigo.endProc();
-		return {
-			cuadruplos: codigo.cuadruplos.getCuads(),
-			funcTable: funcTable.funcTable,
-			globalVarTable: globalVarTable.varsTable,
-			manejadorMemoria: mm
-		}
 		return {
 			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
@@ -194,9 +190,21 @@ BLOQUE
 
 PROG_OPT_VARS
 	: vars PROG_VARS
-	|
+	| 
 ;
 
+ARR_VAR_GLOBAL
+	: TYPE ':' id '[' CTE_I ']' ';'{
+		globalPointerArr = mm.getArrGlobalPointers($1, $5);
+		//console.log(globalPointerArr);
+		tipoVar = $1
+
+		for(let i = 0; i < globalPointerArr.length; i++){
+			mm.inserGlobal(globalPointerArr[i], $1, `${$3}`, '');
+		}
+		globalVarTable.insertVar(`${$3}`, {tipo: $1, dir: globalPointerArr});
+	}
+;
 
 FUNC_OPT_VARS
 	: vars FUNC_VARS
@@ -209,6 +217,8 @@ PROG_VARS
 	}
 	| TYPE ':' id insertGlobalVar LISTAS_IDS_PROG ';'{
 	}
+	| PROG_VARS ARR_VAR_GLOBAL
+	| ARR_VAR_GLOBAL
 ;
 
 insertGlobalVar
@@ -337,6 +347,58 @@ ASIGNACION
 		codigo.asignStmt()
 	}
 	| id '=' LLAMADA
+	| id '[' id ']' '=' EXP ';'{
+
+		readGlobal = globalVarTable.getVar($1);
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+		codigo.addOperador($5)
+
+		readGlobal = globalVarTable.getVar($3);
+		readLocal = varT.getVar($3);
+
+		if(readLocal != undefined){
+			codigo.asignArrStmt(readLocal.dir)
+		}else if(readGlobal != undefined){
+			codigo.asignArrStmt(readGlobal.dir)
+		}
+	}
+	|id '[' CTE_I ']' '=' EXP ';'{
+		readGlobal = globalVarTable.getVar(`${$1}`);
+		pointerConst = mm.getCurrentCTEPointer('int')
+		mm.inserConst(pointerConst, 'int', '', $3)
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+		codigo.addOperador($5)
+		codigo.asignArrStmt(pointerConst)
+	}
+	| id '=' id '[' id ']'  ';'{
+
+		readGlobal = globalVarTable.getVar($1);
+		readLocal = varT.getVar($1);
+
+		if(readLocal != undefined){
+			codigo.addOperando(readLocal.dir, readLocal.tipo)
+			codigo.addOperador($2)
+			
+		}else if(readGlobal != undefined){
+			codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+			codigo.addOperador($2)
+		}
+		
+		readGlobal = globalVarTable.getVar($3);
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+
+		readGlobal = globalVarTable.getVar($5);
+		codigo.asignToArrStmt(readGlobal.dir)
+		
+	}
+
+;
+
+ARR_EXP
+	: id '[' id ']' {
+		readGlobal = globalVarTable.getVar($1);
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+	}
 ;
 
 LLAMADA
@@ -399,14 +461,47 @@ WRITE
 WRITE_TYPE
 	: EXP addWriteCuad MULT_WRITE
 	| CTE_S stringWriteStmt MULT_WRITE
+	| id '[' CTE_I ']' arrWriteStmt MULT_WRITE
+	| id '[' id ']' arrIdWriteStmt MULT_WRITE
 ;
 
 stringWriteStmt
 	:{
-		pointerConst = mm.getCurrentCTEPointer('string')
+		pointerConst = mm.getCurrentCTEPointer('string');
 		mm.inserConst(pointerConst, 'string', '', $1)
 		codigo.addOperando(pointerConst, 'string');
 		codigo.writeStmt()
+	}
+;
+
+
+arrIdWriteStmt
+	:{
+		readGlobal = globalVarTable.getVar(`${$-2}`);
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+
+		readGlobal = globalVarTable.getVar($0);
+		readLocal = varT.getVar($0);
+
+		if(readLocal != undefined){
+			codigo.addOperando(readLocal.dir, 'int');
+			codigo.arrWriteStmt()
+		}else if(readGlobal != undefined){
+			codigo.addOperando(readGlobal.dir, 'int');
+			codigo.arrWriteStmt()
+		}
+
+	}
+;
+
+arrWriteStmt
+	:{
+		readGlobal = globalVarTable.getVar(`${$-2}`);
+		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
+		pointerConst = mm.getCurrentCTEPointer('int');
+		mm.inserConst(pointerConst, 'int', '', $0)
+		codigo.addOperando(pointerConst, 'int');
+		codigo.arrWriteStmt()
 	}
 ;
 
@@ -650,6 +745,8 @@ let callParamCounter = 1;
 let funcCalled;
 let readLocal;
 let readGlobal;
+let localPointerArr;
+let globalPointerArr;
 
 
 
