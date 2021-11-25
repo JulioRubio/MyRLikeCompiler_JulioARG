@@ -106,6 +106,12 @@ PROGRAMA
 	| program id ';' PROG_OPT_VARS gotoMain FUNCTION MAIN EOF {
 		funcTable.insertFunc({type: "program", name:$2, varTable: globalVarTable})
 		codigo.endProc();
+		// console.log(mm);
+		//console.log(codigo.cuadruplos.getCuads());
+		//console.log(funcTable.funcTable["fiboIter"].varTable);
+		// console.log(globalVarTable.varsTable);
+		//console.log(mm.mapaCTE);
+		// console.log();
 		return {
 			cuads: codigo.cuadruplos.getCuads(),
 			funcTable: funcTable.funcTable,
@@ -262,6 +268,7 @@ insertLocalMultVar
 		pointerLocal = mm.getCurrentLocalPointer(tipoVar);
 		mm.inserLocal(pointerLocal, tipoVar, $1, '');
 		varT.insertVar($1, {tipo: tipoVar, dir: pointerLocal})
+		funcVarCounter += 1;
 	}
 ;
 
@@ -392,13 +399,6 @@ ASIGNACION
 		
 	}
 
-;
-
-ARR_EXP
-	: id '[' id ']' {
-		readGlobal = globalVarTable.getVar($1);
-		codigo.addOperando(readGlobal.dir, readGlobal.tipo)
-	}
 ;
 
 LLAMADA
@@ -747,7 +747,3 @@ let readLocal;
 let readGlobal;
 let localPointerArr;
 let globalPointerArr;
-
-
-
-

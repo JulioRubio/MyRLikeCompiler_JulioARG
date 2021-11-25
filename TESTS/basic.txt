@@ -1,8 +1,7 @@
 
 program MyRLike;
 vars 
-    int: i,b;
-    int: h[5];
+    int: b;
 
 
 function void hi(){
@@ -34,4 +33,6 @@ function void main (){
     
     res = sum(a,b);
     write("call res ", res);
+
+    hi();
 }
