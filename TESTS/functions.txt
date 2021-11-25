@@ -7,6 +7,7 @@ vars
 function void addValues(){
     vars 
         int: temp;
+    write("Ingresa valores ");
     i = 0;
     while(i < 5){
         read(temp);

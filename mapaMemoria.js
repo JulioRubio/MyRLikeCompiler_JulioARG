@@ -1,5 +1,10 @@
 
+/* mapa de memoria se encarga de crear los cautro objectos (en caso de temp, const) o tres (local, global) donde se encuentra segmentada en distintos objectos que sirven como
+contenedores, a traves de esta clase se generan todas las operaciones hechas hacia la memoria ya sean en ejecucion o compilacion*/
 class mapaMemoria{
+    /*este constructor recibe un tipo que solo es utilizado para decidir si se segmenta en 4 o 3 en caso de ser cuatro la memoria extra recibe el nombre de ext que es extra
+    utilizando la direccion inicio y fin se encuentra el tamaño y con este tamaño se divide en el numero de segmentos y se asigna el primer bloque a enteros, seguido de flotantes
+    seguido de temporales y al final constantes. Se crea un apuntador al primer indicio de la memoria que sera utilizado para llevar control de los espacios ya utilizados*/
     constructor (tipo, dirInicio, dirFin){
 
         this.num = 3;
@@ -104,6 +109,8 @@ class mapaMemoria{
 
     }
 
+    //inserta una nueva direccion de memoria a la memoria correspondiente al tipo de dato que es recibido
+    //guardando un arreglo que contiene en la casilla cero el tipo, en la 1 el nombre y en la dos el valor
     inserDir = (dir, tipo, name, val) =>{
         switch (tipo){
             case 'int':{
@@ -124,6 +131,7 @@ class mapaMemoria{
         }
     }
 
+    /*actualiza un valor a un espacio de memoria ya definido dependiendo al tipo, esto es utilizado principalmente en ejecucion */
     updateVal = (tipo, dir, val) => {
 
         //console.log(tipo, dir, val) 
@@ -152,6 +160,7 @@ class mapaMemoria{
             }
         }
     }
+    /*dado un tipo y direccion regresa un valor encontrado en la casilla dos del arreglo */
     getVal = (tipo, dir) =>{
         switch (tipo){
             case 'int':{
@@ -169,6 +178,8 @@ class mapaMemoria{
         }
     }
 
+    /*dado un tamaño y un scope regresa un tipo, el scope es utilizado simplementa para 
+    que no se regrese ext sino el tipo que los valores guardados en ext pertenecen bool para temps y stirngs para consts */
     getType = (dir, scope) =>{
         switch(true){
             case (dir < this.intFin): 
@@ -185,6 +196,7 @@ class mapaMemoria{
         }
     }
     
+    /*regresa el pointer siguiente a utilizar dado un tipo */
     getPointer = (tipo) =>{
         let pointer;
         switch (tipo){
@@ -211,6 +223,7 @@ class mapaMemoria{
         }
     }
 
+    /*regresa un set de pointers a utilizar dado un tipo y un tamaño para indicar cuandos regresar, esta funcion se usa para arreglos */
     getPointers = (tipo, tam) =>{
         let i = 0;
         switch (tipo){
@@ -251,6 +264,8 @@ class mapaMemoria{
             }
         }
     }
+
+    /*regreas la memoria, uso principal debuggig */
     getMemoria = (tipo) => {
         switch (tipo){
             case 'int':{
