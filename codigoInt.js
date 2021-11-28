@@ -355,6 +355,17 @@ class condigoInt{
     endProc = () => {
         this.agregarCuadr(['END','','',''])
     }
+
+//languageSpecificFunctions
+    generarGotoLlamadaSpecifica = (funcion, paramsCounter) =>{
+        let arrayPila = {}
+
+        while (paramsCounter > 0) {
+            paramsCounter-=1;
+            arrayPila[paramsCounter] = this.pilaO.pop()
+        }
+        this.agregarCuadr([funcion,'','',arrayPila])
+    }
 }
 
 // || this.pOperPeek() == '&' || this.pOperPeek() == '|' 

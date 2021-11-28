@@ -1,6 +1,8 @@
 const ps = require("prompt-sync")
 const prompt = ps();
 
+let resolveLanguageOperation = require('./moduleOperations')
+
 class maquinaVirtual{
     constructor(codigo){
         this.funcTable = codigo.funcTable;
@@ -22,7 +24,7 @@ class maquinaVirtual{
         //console.log(this.currIndex);
         let cuad = this.cuads[this.currIndex];
         let cuadFunc = this.cuads[this.currIndex][0];
-        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType, funcParams, arrPos,arrType, arrVal;
+        let opL, opR, res, opLVal, opRVal, resVal, resType, opLType, opRType, funcParams, arrPos,arrType, arrVal, arrX, arrY, i;
         //console.log(cuad);
 
         switch (cuadFunc){
@@ -332,12 +334,88 @@ class maquinaVirtual{
                 opLType = this.getMemoryType(opL);
                 this.saveMemoryVal(opLType, opL, resVal);
                 break;
+            case 'mean':
+                    this.currIndex+=1;
+                    arrX = Array.from(cuad[3][0])
+                    for(i = 0; i < arrX.length; i++){
+                        arrType = this.getMemoryType(arrX[i]);
+                        arrVal = this.getMemoryVal(arrType, arrX[i]);
+                        if(arrType == 'int' || arrType == 'float'){
+                            arrX[i] = Number(arrVal)
+                        }
+                        arrX[i] = arrVal
+                    }
+
+                    resolveLanguageOperation('mean', arrX)
+                break;
+            case 'mode':
+                    this.currIndex+=1;
+                    arrX = Array.from(cuad[3][0])
+                    for(i = 0; i < arrX.length; i++){
+                        arrType = this.getMemoryType(arrX[i]);
+                        arrVal = this.getMemoryVal(arrType, arrX[i]);
+                        if(arrType == 'int' || arrType == 'float'){
+                            arrX[i] = Number(arrVal)
+                        }
+                        arrX[i] = arrVal
+                    }
+                    resolveLanguageOperation('mode', arrX)
+
+                break;
+            case 'variance':
+                    this.currIndex+=1;
+                    arrX = Array.from(cuad[3][0])
+                    for(i = 0; i < arrX.length; i++){
+                        arrType = this.getMemoryType(arrX[i]);
+                        arrVal = this.getMemoryVal(arrType, arrX[i]);
+                        if(arrType == 'int' || arrType == 'float'){
+                            arrX[i] = Number(arrVal)
+                        }
+                        arrX[i] = arrVal
+                    }
+                    resolveLanguageOperation('variance', arrX)
+                break;
+            case 'linearRegression':
+                    this.currIndex+=1;
+                    arrX = Array.from(cuad[3][0])
+                    arrY = Array.from(cuad[3][1])
+                    for(i = 0; i < arrX.length; i++){
+                        arrType = this.getMemoryType(arrX[i]);
+                        arrVal = this.getMemoryVal(arrType, arrX[i]);
+                        if(arrType == 'int' || arrType == 'float'){
+                            arrX[i] = Number(arrVal)
+                        }
+                        arrX[i] = arrVal
+
+                        arrType = this.getMemoryType(arrY[i]);
+                        arrVal = this.getMemoryVal(arrType, arrY[i]);
+                        arrY[i] = arrVal
+                    }
+                    resolveLanguageOperation('linearRegression', arrX, arrY)
+                break;
+            case 'plotXY':
+                    this.currIndex+=1;
+                    arrX = Array.from(cuad[3][0])
+                    arrY = Array.from(cuad[3][1])
+                    for(i = 0; i < arrX.length; i++){
+                        arrType = this.getMemoryType(arrX[i]);
+                        arrVal = this.getMemoryVal(arrType, arrX[i]);
+                        if(arrType == 'int' || arrType == 'float'){
+                            arrX[i] = Number(arrVal)
+                        }
+                        arrX[i] = arrVal
+                        arrType = this.getMemoryType(arrY[i]);
+                        arrVal = this.getMemoryVal(arrType, arrY[i]);
+                        arrY[i] = arrVal
+                    }
+                    resolveLanguageOperation('plotXY', arrX, arrY)
+                break;  
             case 'ENDFUNC':
                 this.currIndex = this.insPointer.pop()
             case 'END':
                 this.currIndex+=1
                 return
-            default: throw new Error("you should not be heere"); break;
+            default: this.currIndex+=1; break;
         }
 
         return;
@@ -386,7 +464,7 @@ class maquinaVirtual{
 
     resolverCuads = () => {
         var count = Object.keys(this.cuads).length;
-        //console.log(this.cuads);
+        // console.log(this.cuads);
         while(this.currIndex < count){
             this.performCuadOperation()
         }

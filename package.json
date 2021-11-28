@@ -4,7 +4,11 @@
   "description": "Compilador basado en lenguaje MyRLike utilizando js",
   "main": "parser.js",
   "dependencies": {
+    "chart.js": "^3.6.0",
+    "chartjs-node-canvas": "^4.1.5",
     "jison": "^0.4.18",
+    "mathjs": "^10.0.0",
+    "ml": "^6.0.0",
     "prompt-sync": "^4.2.0"
   },
   "devDependencies": {},

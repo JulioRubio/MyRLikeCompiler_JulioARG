@@ -52,6 +52,11 @@
 "do"              	return "do"
 "while"             return "while"
 "main"	            return "main"
+"mean"				return "mean"
+"mode"				return "mode"
+"variance"			return "variance"
+"linearRegression" 	return "linearRegression"
+"plotXY"			return "plotXY"
 
 
 
@@ -127,7 +132,8 @@ PROGRAMA
 gotoMain
 	: {
 		codigo.gotoMain();
-	};
+	}
+;
 
 currentCuadCounter
 	:{
@@ -202,13 +208,15 @@ PROG_OPT_VARS
 ARR_VAR_GLOBAL
 	: TYPE ':' id '[' CTE_I ']' ';'{
 		globalPointerArr = mm.getArrGlobalPointers($1, $5);
-		//console.log(globalPointerArr);
-		tipoVar = $1
-
+		let arrayTemp = []
 		for(let i = 0; i < globalPointerArr.length; i++){
-			mm.inserGlobal(globalPointerArr[i], $1, `${$3}`, '');
+			mm.inserGlobal(globalPointerArr[i], $1, $3, '');
+			arrayTemp[i] = globalPointerArr[i]
+			//console.log(mm.mapaGlobal)
 		}
-		globalVarTable.insertVar(`${$3}`, {tipo: $1, dir: globalPointerArr});
+		//console.log("THIS" , $3, $1, globalPointerArr)
+		globalVarTable.insertVar($3, {tipo: $1, dir: arrayTemp});
+		//console.log("GLOBAL",globalVarTable.varsTable)
 	}
 ;
 
@@ -405,6 +413,45 @@ LLAMADA
 	: id genERA '(' CALL_PARAMS ')'{
 		codigo.goSub(funcCalled.name, funcCalled.type, mm.mapaTemp);
 	}
+	| LANGUAGE_SPECIFIC_FUNCS '('resetParamCounter LANGUAGE_SPECIFIC_PARAMS')'{
+	
+		codigo.generarGotoLlamadaSpecifica($1, callParamCounter)
+	}
+;
+
+resetParamCounter
+	:{
+		callParamCounter = 0;
+	}
+;
+
+LANGUAGE_SPECIFIC_PARAMS
+	: ARR_ID_PARAM MULT_LANGUAGE_SPECIFIC_PARAMS
+	|
+;
+
+MULT_LANGUAGE_SPECIFIC_PARAMS
+	: ',' ARR_ID_PARAM MULT_LANGUAGE_SPECIFIC_PARAMS
+	|
+;
+
+ARR_ID_PARAM
+	: id {
+		//console.log($1)
+		callParamCounter+=1;
+		arrGlobalId = globalVarTable.getVar($1)
+		codigo.addOperando(arrGlobalId.dir, arrGlobalId.tipo);
+		//console.log(globalVarTable.varsTable);
+
+	}
+;
+
+LANGUAGE_SPECIFIC_FUNCS 
+	: mean
+	| mode
+	| variance
+	| linearRegression
+	| plotXY    
 ;
 
 genERA
@@ -747,3 +794,5 @@ let readLocal;
 let readGlobal;
 let localPointerArr;
 let globalPointerArr;
+
+let arrGlobalId;

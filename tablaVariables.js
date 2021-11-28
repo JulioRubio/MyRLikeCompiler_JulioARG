@@ -8,6 +8,7 @@ let tablaVariables = class {
 
     /*agrega una nueva variable a la tabla de varialbes, esta es llamada cada vez que una nueva variable es declarada*/
     insertVar = (name, vars) =>{
+        //console.log(name,vars, this.varsTable)
         if (this.varsTable.hasOwnProperty(name)){
             throw new Error(`${name} ya ha sido declarada`)
         }

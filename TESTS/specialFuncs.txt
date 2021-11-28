@@ -1,0 +1,43 @@
+program MyRLike;
+vars 
+    int: arrX[5];
+    int: arrY[5];
+    int: i,temp;
+
+function void addXValues(){
+    i = 0;
+    write("Agrega valores de arreglo X");
+    while(i < 5){
+        read(temp);
+        arrX[i] = temp;
+        i = i + 1;
+    }
+}
+
+function void addYValues(){
+    i = 0;
+    write("Agrega valores de arreglo Y");
+    while(i < 5){
+        read(temp);
+        arrY[i] = temp;
+        i = i + 1;
+    }
+}
+
+
+function void main (){
+    vars    
+        int: res;
+        float: floatRest;
+    addXValues();
+    addYValues();
+
+    write("Llamadas funciones especiales");
+
+
+    mean(arrX);
+    mode(arrX);
+    variance(arrX);
+    linearRegression(arrX, arrY);
+    plotXY(arrX, arrY);
+}

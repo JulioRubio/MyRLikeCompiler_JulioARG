@@ -1,0 +1,39 @@
+
+program MyRLike;
+vars 
+    int: i;
+
+function int factIter(int: n){
+    vars
+        int: fact;
+
+    fact = 1;
+    i = fact;
+
+    while(i <= n){
+        fact = fact * i;
+        i = i + 1;
+    }
+    return (fact);
+}
+
+function int patito(int: n){
+    vars 
+        int: res;
+
+    res = factIter(n * 2);
+
+    return(res * 2);
+}
+
+function void main (){
+    vars 
+        int: res, fact;
+
+    write("Da valor de factorial ");
+    read(fact);
+
+    res = patito(fact);
+    write("fact iter ", res);
+
+}

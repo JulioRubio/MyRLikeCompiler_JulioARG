@@ -140,21 +140,21 @@ class mapaMemoria{
         // console.log(memory)
         switch (tipo){
             case 'int':{
-                this.memoriaInt[dir] = [tipo, memory[1], val];
+                this.memoriaInt[dir] = [tipo, dir, val];
                 break;
             }
             case 'float':{
-                this.memoriaFloat[dir] = [tipo, memory[1], val];
+                this.memoriaFloat[dir] = [tipo, dir, val];
                 break;
 
             }
             case 'char':{
-                this.memoriaChar[dir] = [tipo, memory[1], val];
+                this.memoriaChar[dir] = [tipo, dir, val];
                 break;
 
             }
             default: {
-                this.memoriaExt[dir] = [tipo, memory[1], val];
+                this.memoriaExt[dir] = [tipo, dir, val];
                 break;
 
             }
@@ -232,7 +232,6 @@ class mapaMemoria{
                     this.pointerArr[i] = this.intPointer;
                     this.intPointer += 1;
                     i+=1
-
                 }
                 return this.pointerArr;
             }

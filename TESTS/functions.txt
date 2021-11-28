@@ -27,6 +27,7 @@ function void calculateMean(){
     avg = sum / 5.0;
     write("average = ", avg);
 }
+
 function void calculateModa(){  
     vars
         int: counter;
@@ -52,7 +53,6 @@ function void calculateModa(){
     }
 
     write("max val ", value , " with ",  maxCount, " iterations");
-
 }
 
 function void main (){
